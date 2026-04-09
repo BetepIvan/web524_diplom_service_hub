@@ -8,7 +8,8 @@ NULLABLE = {'blank': True, 'null': True}
 class UserRoles(models.TextChoices):
     ADMIN = 'admin', _('admin')
     MODERATOR = 'moderator', _('moderator')
-    USER = 'user', _('user')
+    MASTER = 'master', _('master')      # Тот самый исполнитель
+    CUSTOMER = 'customer', _('customer')  # Обычный заказчик
 
 
 class User(AbstractUser):
