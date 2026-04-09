@@ -81,29 +81,30 @@ USER = os.getenv('MS_SQL_USER')
 PASSWORD = os.getenv('MS_SQL_KEY')
 HOST = os.getenv('MS_SQL_SERVER')
 DATABASE = os.getenv('MS_SQL_DATABASE')
+PAD_DATABASE = os.getenv('MS_SQL_PAD_DATABASE')
 DRIVER = os.getenv('MS_SQL_DRIVER')
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'mssql',
-#         'NAME': DATABASE,
-#         'USER': USER,
-#         'PASSWORD': PASSWORD,
-#         'HOST': HOST,
-#         'PORT': '',
-#         'OPTIONS': {
-#             'driver': DRIVER,
-#             'extra_params': 'TrustServerCertificate=yes;', # Важно для локальных серверов
-#         }
-#     }
-# }
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'mssql',
+        'NAME': DATABASE,
+        'USER': USER,
+        'PASSWORD': PASSWORD,
+        'HOST': HOST,
+        'PORT': '',
+        'OPTIONS': {
+            'driver': DRIVER,
+            'extra_params': 'TrustServerCertificate=yes;', # Важно для локальных серверов
+        }
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation

@@ -15,7 +15,7 @@ class UserRoles(models.TextChoices):
 class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True, verbose_name='Электронная почта')
-    role = models.CharField(max_length=9, choices=UserRoles.choices, default=UserRoles.USER)
+    role = models.CharField(max_length=9, choices=UserRoles.choices, default=UserRoles.CUSTOMER)
     first_name = models.CharField(max_length=150, verbose_name='Имя', default='Anonymous')
     last_name = models.CharField(max_length=150, verbose_name='Фамилия', default='Anonymous')
     avatar = models.ImageField(upload_to='users/', verbose_name='Аватар', **NULLABLE)
