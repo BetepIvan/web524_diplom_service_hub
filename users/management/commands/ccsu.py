@@ -1,5 +1,6 @@
 from django.core.management import BaseCommand
-from users.models import User, UserRoles
+from users.models import User, UserRoles  # Уже есть, хорошо
+
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
@@ -21,17 +22,24 @@ class Command(BaseCommand):
                 'is_superuser': False,
             },
             {
-                'email': 'master@web.top', # Добавляем тестового мастера
-                'role': UserRoles.MASTER,
+                'email': 'master@web.top',
+                'role': UserRoles.MASTER,  # Теперь эта роль существует
                 'first_name': 'Ivan',
                 'last_name': 'Masterov',
+                'is_staff': False,
+                'is_superuser': False,
+            },
+            {
+                'email': 'client@web.top',  # Добавить обычного клиента
+                'role': UserRoles.USER,
+                'first_name': 'Petr',
+                'last_name': 'Clientov',
                 'is_staff': False,
                 'is_superuser': False,
             },
         ]
 
         for item in users_data:
-            # Используем update_or_create, чтобы не было ошибок при повторном запуске
             user, created = User.objects.update_or_create(
                 email=item['email'],
                 defaults={
@@ -46,6 +54,6 @@ class Command(BaseCommand):
             if created:
                 user.set_password('qwert24')
                 user.save()
-                self.stdout.write(self.style.SUCCESS(f'Создан пользователь: {user.email}'))
+                self.stdout.write(self.style.SUCCESS(f'Создан пользователь: {user.email} ({user.role})'))
             else:
                 self.stdout.write(self.style.WARNING(f'Пользователь {user.email} уже существует'))

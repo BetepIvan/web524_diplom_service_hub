@@ -19,8 +19,8 @@ class Command(BaseCommand):
         else:
             conn.autocommit = True
             try:
-                conn.execute(fr'CREATE DATABASE {DATABASE};')
+                conn.execute(f'CREATE DATABASE {DATABASE};')
             except pyodbc.Error as err:
-                print(err)
+                print(f'Ошибка при создании базы данных: {err}')
             else:
                 print(f'База данных {DATABASE} успешно создана')
