@@ -1,0 +1,31 @@
+{% extends 'services/base.html' %}
+
+{% block content %}
+<div class="row">
+  <div class="col-3"></div>
+  <div class="col-6">
+    <div class="card">
+      <div class="card-header">
+          {% if user.is_authenticated %}
+          Изменить профиль
+          {% else %}
+          Введите данные для регистрации
+          {% endif %}
+      </div>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card-body">
+          {{ form.as_p }}
+        </div>
+        <div class="card-footer">
+          {% if user.is_authenticated %}
+          <button type="submit" class="btn btn-success">Сохранить</button>
+          {% else %}
+          <button type="submit" class="btn btn-success">Регистрация</button>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

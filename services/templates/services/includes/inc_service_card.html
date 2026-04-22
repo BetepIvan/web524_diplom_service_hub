@@ -1,0 +1,31 @@
+{% load services_tags %}
+<div class="col-4">
+    <div class="card mb-4 box-shadow">
+        <div class="card-header">
+            <h4 class="my-0 font-weight-normal">{{ object.title }}</h4>
+        </div>
+        <img class="card-img-top"
+             src="{{ object.photo|service_media }}" width="300" height="320"
+             alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title pricing-card-title">Категория: {{ object.category.name }}</h5>
+            <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                <li>Цена: {{ object.price|default:"договорная" }} ₽</li>
+                <li>Город: {{ object.location|default:"не указан" }}</li>
+                <li>Просмотров: {{ object.views }}</li>
+            </ul>
+            <div class="d-grid gap-2">
+                <a class="btn btn-lg btn-outline-info"
+                   href="{% url 'services:service_detail' object.pk %}">Подробнее</a>
+                {% if user.is_authenticated and object.owner == user %}
+                <a class="btn btn-lg btn-outline-warning"
+                   href="{% url 'services:service_update' object.pk %}">Изменить</a>
+                {% endif %}
+                {% if user.is_authenticated and user.role == 'admin' %}
+                <a class="btn btn-lg btn-outline-danger"
+                   href="{% url 'services:service_delete' object.pk %}">Удалить</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

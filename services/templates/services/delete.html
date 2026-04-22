@@ -1,0 +1,33 @@
+{% extends 'services/base.html' %}
+{% load my_tags %}
+{% block content %}
+
+<form method="post" enctype="multipart/form-data" class="row">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                {% if object %}
+                Вы уверены, что хотите удалить собаку?
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <img class="card-img-top"
+                     src="{{ object.photo|services_media }}" width="300" height="320"
+                     alt="Card image cap">
+            <div class="card-body">
+                <p class="card-text">{{ object }}</p>
+            </div>
+            <a href="{% url 'services:services_list' %}" class="btn btn-outline-primary"><< Назад</a>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-outline-danger">
+                {% if object %}
+                Вы уверены, что хотите удалить собаку?
+                {% endif %}
+            </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

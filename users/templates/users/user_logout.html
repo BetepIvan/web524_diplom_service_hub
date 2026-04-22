@@ -1,0 +1,6 @@
+{% extends 'services/base.html' %}
+{% block content %}
+<h1>Вы успешно вышли из вашего аккаунта</h1>
+<p>Спасибо за использование нашего сервиса</p>
+<a href="{% url 'users:user_login' %}">Нажмите сюда для повторного входа</a>
+{% endblock %}

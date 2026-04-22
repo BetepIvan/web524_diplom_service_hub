@@ -1,0 +1,33 @@
+{% extends 'services/base.html' %}
+{% load services_tags %}
+{% block content %}
+
+<div class="col-md-4">
+    <div class="card mb-4 box-shadow">
+        <img class="card-img-top"
+             src="{{ object.photo|service_media }}" width="300" height="320"
+             alt="Card image cap">
+        <div class="card-body">
+            <p class="card-text">Название: {{ object.title }}</p>
+            <p class="card-text">Категория: {{ object.category.name }}</p>
+            <p class="card-text">Описание: {{ object.description|default:"-" }}</p>
+            <span class="text-muted">Цена: {{ object.price|default:"договорная" }} ₽</span><br>
+            <span class="text-muted">Город: {{ object.location|default:"не указан" }}</span><br>
+            <span class="text-muted">Почта мастера: {{ object.owner.email|default:"Без мастера" }}</span><br>
+            <span class="text-muted">Имя мастера: {{ object.owner.first_name|default:"Не указано" }}</span><br>
+            <span class="text-muted">Телефон мастера: {{ object.owner.phone|default:"Не указано" }}</span><br>
+            <span class="text-muted">Телеграм мастера: {{ object.owner.telegram|default:"Не указано" }}</span><br>
+            <span class="text-muted">Просмотры: {{ object.views }}</span><br>
+            <span class="text-muted">Статус: {{ object.get_status_display }}</span><br>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'services:services_list' %}" class="btn btn-outline-primary btn-sm"><< Назад</a>
+            {% if user == object.owner %}
+                <a class="btn btn-lg btn-outline-warning btn-sm" href="{% url 'services:service_update' object.pk %}">изменить</a>
+                <a class="btn btn-lg btn-outline-danger btn-sm" href="{% url 'services:service_delete' object.pk %}">удалить</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

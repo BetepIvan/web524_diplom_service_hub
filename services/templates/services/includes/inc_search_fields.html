@@ -1,0 +1,20 @@
+<div class="d-flex justify-content-end gap-2">
+    <form action="{% url 'services:categories_search' %}" method="get">
+        <input name="q"
+               class="form-control form-control-sm"
+               type="text"
+               placeholder="Поиск категории...">
+    </form>
+    <form action="{% url 'services:services_search' %}" method="get">
+        <input name="q"
+               class="form-control form-control-sm"
+               type="text"
+               placeholder="Поиск услуги...">
+    </form>
+    <form action="{% url 'services:all_search' %}" method="get">
+        <input name="q"
+               class="form-control form-control-sm"
+               type="text"
+               placeholder="Поиск...">
+    </form>
+</div>

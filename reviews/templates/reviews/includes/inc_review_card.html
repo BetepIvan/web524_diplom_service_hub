@@ -1,0 +1,31 @@
+{% load services_tags %}
+{% load user_tags %}
+<div class="col-4 mb-4">
+  <div class="card h-100 box-shadow">
+    <div class="card-header" style="min-height: 93px;">
+      <h4 class="my-0 font-weight-center text-center">{{ object.dog }}</h4>
+    </div>
+    <img class="card-img-top"
+         src="{{ object.dog.photo|dogs_media }}" width="300" height="320"
+         alt="Card image cap">
+    <div class="card-body d-flex flex-column">
+      <h5 class="card-title pricing-card-title">{{ object|truncatechars:30 }}</h5>
+      <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+        <li>Создан: {{ object.created }}</li>
+      </ul>
+      <div class="d-grid gap-2 mt-auto">
+        <a class="btn btn-lg btn-block btn-outline-info"
+           href="{% url 'reviews:review_detail' object.slug %}">Подробнее</a>
+        {% if object.author == user %}
+        <a class="btn btn-lg btn-block btn-outline-warning"
+           href="{% url 'reviews:review_update' object.slug %}">Изменить отзыв</a>
+        <a class="btn btn-lg btn-block btn-outline-danger"
+           href="{% url 'reviews:review_delete' object.slug %}">Удалить отзыв</a>
+        {% elif user.role == 'admin' %}
+        <a class="btn btn-lg btn-block btn-outline-danger"
+           href="{% url 'reviews:review_delete' object.slug %}">Удалить отзыв</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

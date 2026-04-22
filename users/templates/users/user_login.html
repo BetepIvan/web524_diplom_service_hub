@@ -1,0 +1,20 @@
+{% extends 'services/base.html' %}
+
+{% block content %}
+<div class="row">
+  <div class="col-3"></div>
+  <div class="col-6">
+    <div class="card">
+      <div class="card-header">Ввидите данные для входа</div>
+      <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" class="btn btn-outline-success">Войти</button>
+        </form>
+      </div>
+      <div class="card-footer"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

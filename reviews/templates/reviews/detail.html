@@ -1,0 +1,32 @@
+{% extends 'services/base.html' %}
+{% load my_tags %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-12 box-shadow">
+            <div class="card-header">
+                <p class="card-text">
+                    Отзыв: {{ object.services }}
+                </p>
+            </div>
+            <img class="card-img-top"
+                src="{{ object.services.photo|services_media }}" width="300" height="600"
+                alt="Card image cap">
+            <div class="card-body">
+                <p class="card-text">
+                    {{ object.content }}
+                </p>
+                <samp class="text-muted">Дата создания: {{ object.created }}</samp><br>
+                <samp class="text-muted">Автор: {{ object.author|default:"Удаленный пользователь" }}</samp><br>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'reviews:reviews_list' %}" class="btn btn-outline-primary"><< Назад</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+

@@ -1,0 +1,28 @@
+{% extends 'services/base.html' %}
+{% load user_tags %}
+{% block content %}
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                Профиль {{ object.first_name }} {{ object.last_name }}
+            </div>
+            <img class="card-img-top"
+                 src="{{ user.avatar|user_media }}" width="300" height="700"
+                 alt="Card image cap">
+            <div class="card-body">
+                <span class="card-text">Почта: {{user.email}}</span><br>
+                <span class="card-text">Имя: {{user.first_name|default:"Не указано"}}</span><br>
+                <span class="card-text">Фамилия: {{user.last_name|default:"Не указано"}}</span><br>
+                <span class="card-text">Телефон: {{user.phone|default:"Не указано"}}</span><br>
+                <span class="card-text">Телеграм: {{user.telegram|default:"Не указано"}}</span><br>
+                <span class="card-text">MAX: {{user.max_messenger|default:"Не указано"}}</span><br>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'users:users_list' %}" class="btn btn-outline-primary"><< Назад</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

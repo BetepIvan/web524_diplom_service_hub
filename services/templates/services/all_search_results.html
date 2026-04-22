@@ -1,0 +1,40 @@
+{% extends 'services/base.html' %}
+{% load my_tags %}
+
+{% block content %}
+<div class="container">
+    {% if object_list %}
+        <!-- Ряд с собаками -->
+        <h3 class="mb-3">Собаки</h3>
+        <div class="row">
+            {% for object in object_list %}
+                {% if object|class_name == 'Dog' %}
+                    {% include 'dogs/includes/inc_dog_card.html' with object=object %}
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- Ряд с породами -->
+        <h3 class="mb-3">Породы</h3>
+        <div class="row">
+            {% for object in object_list %}
+                {% if object|class_name == 'Breed' %}
+                    {% include 'dogs/includes/inc_breed.html' with object=object %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-12 text-center py-5">
+                <h3>Ничего не найдено</h3>
+                <p class="text-muted">Попробуйте изменить поисковый запрос</p>
+                <a href="{% url 'dogs:index' %}" class="btn btn-outline-primary mt-3">Вернуться на главную</a>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if is_paginated %}
+        {% include 'dogs/includes/inc_pagination.html' %}
+    {% endif %}
+</div>
+{% endblock %}

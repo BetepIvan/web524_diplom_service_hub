@@ -1,0 +1,31 @@
+{% extends 'services/base.html' %}
+{% load user_tags %}
+{% block content %}
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">Мой профиль</div>
+                        <img class="card-img-top"
+                         src="{{ user.avatar|user_media }}" width="300" height="700"
+                         alt="Card image cap">
+            <div class="card-body">
+                <span class="card-text">Почта: {{user.email}}</span><br>
+                <span class="card-text">Имя: {{user.first_name|default:"Не указано"}}</span><br>
+                <span class="card-text">Фамилия: {{user.last_name|default:"Не указано"}}</span><br>
+                <span class="card-text">Телефон: {{user.phone|default:"Не указано"}}</span><br>
+                <span class="card-text">Телеграм: {{user.telegram|default:"Не указано"}}</span><br>
+                <span class="card-text">MAX: {{user.max_messenger|default:"Не указано"}}</span><br>
+            </div>
+                <div class="card-footer text-end">
+                    <div class="d-flex justify-content-end gap-1 flex-wrap">
+                        <a href="{% url 'services:index' %}" class="btn btn-outline-primary btn-sm"><< Назад</a>
+                        <a class="btn btn-outline-warning btn-sm" href="{% url 'users:user_update' %}">обновить</a>
+                        <a class="btn btn-outline-warning btn-sm" href="{% url 'users:user_change_password' %}">изменить пароль</a>
+                        <a class="btn btn-outline-warning btn-sm" href="{% url 'users:user_generate_password' %}">сгенерировать пароль</a>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

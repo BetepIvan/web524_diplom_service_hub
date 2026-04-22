@@ -1,0 +1,22 @@
+{% load user_tags %}
+<div class="col-4">
+  <div class="card mb-4 box-shadow">
+    <div class="card_header py-3 px-4">
+        <h4 class="my-0 font-weight-normal">{{ object.first_name }}</h4>
+    </div>
+    <img class="card-img-top"
+         src="{{ object.avatar|user_media }}" width="300" height="320"
+         alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title pricing-card-title">{{ object.first_name }} {{ object.last_name }}</h5>
+      <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+        <li>E-mail: {{ object.email }}</li>
+        <li>Телефон: {{ object.phone|default:'не указан' }}</li>
+        <li>Telegram: {{ object.telegram|default:'не указан' }}</li>
+        <li>MAX: {{ object.max_messenger|default:'не указан' }}</li>
+      </ul>
+      <a class="btn btn-lg btn-block btn-outline-info"
+         href="{% url 'users:user_detail' object.pk %}">Подробная информация</a>
+    </div>
+  </div>
+</div>

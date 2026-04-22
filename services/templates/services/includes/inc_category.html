@@ -1,0 +1,13 @@
+<div class="col-md-4">
+  <div class="card mb-4 box-shadow">
+    <div class="card-body">
+      <p class="card-text">{{ object.name }}</p>
+      <div class="d-flex justify-between align-items-center">
+        <div class="btn-group">
+          <a href="{% url 'services:category_services' object.pk %}" type="button"
+             class="btn btn-sm btn-outline-secondary">К услугам</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

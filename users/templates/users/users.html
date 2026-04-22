@@ -1,0 +1,12 @@
+{% extends 'services/base.html' %}
+{% load user_tags %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        {% for object in object_list %}
+        {% include 'users/includes/inc_user_card.html' with object=object %}
+        {% endfor %}
+    </div>
+    {% include 'services/includes/inc_pagination.html' %}
+</div>
+{% endblock %}

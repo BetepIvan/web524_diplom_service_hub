@@ -1,0 +1,28 @@
+{% extends 'services/base.html' %}
+{% block content %}
+<form method="post" class="row">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                {% if object %}
+                Вы уверены, что хотите удалить отзыв?
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ object.title }}</p>
+                <p class="card-text">{{ object.services }}</p>
+            </div>
+            <div class="card-footer">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-outline-danger float-end">
+                    {% if object %}
+                    Удалить
+                    {% endif %}
+                </button>
+                <a href="{% url 'reviews:reviews_list' %}" class="btn btn-outline-primary"><< Назад</a>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
