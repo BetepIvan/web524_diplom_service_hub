@@ -3,7 +3,8 @@ from services.views import (
     index, CategoryListView, ServicesByCategoryListView, ServiceListView,
     ServiceCreateView, ServiceDetailView, ServiceUpdateView, ServiceDeleteView,
     service_toggle_activity, ServiceDeactivatedListView, ServiceSearchListView,
-    CategorySearchListView, AllSearchView
+    CategorySearchListView, AllSearchView,
+    CategoryCreateView, CategoryUpdateView, CategoryDeleteView, CategorySuggestView, CategoryModerateView
 )
 from services.apps import ServicesConfig
 from django.views.decorators.cache import cache_page, never_cache
@@ -13,11 +14,19 @@ app_name = ServicesConfig.name
 urlpatterns = [
     path('', cache_page(60)(index), name='index'),
 
-    path('categories/', cache_page(60)(CategoryListView.as_view()), name='categories'),
+    # Categories
+    path('categories/', CategoryListView.as_view(), name='categories_list'),
+    path('categories/create/', CategoryCreateView.as_view(), name='category_create'),
+    path('categories/<int:pk>/edit/', CategoryUpdateView.as_view(), name='category_edit'),
+    path('categories/<int:pk>/delete/', CategoryDeleteView.as_view(), name='category_delete'),
+    path('categories/suggest/', CategorySuggestView.as_view(), name='category_suggest'),
     path('categories/<int:pk>/services/', cache_page(60)(ServicesByCategoryListView.as_view()), name='category_services'),
     path('categories/search/', CategorySearchListView.as_view(), name='categories_search'),
+    path('categories/<int:pk>/moderate/', CategoryModerateView.as_view(), name='category_moderate'),
+
     path('all_search/', AllSearchView.as_view(), name='all_search'),
 
+    # Services
     path('services/', ServiceListView.as_view(), name='services_list'),
     path('services/deactivate/', ServiceDeactivatedListView.as_view(), name='services_list_deactivated'),
     path('services/search/', ServiceSearchListView.as_view(), name='services_search'),

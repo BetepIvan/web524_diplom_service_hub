@@ -1,0 +1,33 @@
+{% extends 'services/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">Предложить категорию</h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Ваше предложение будет отправлено на модерацию администратору.
+                    </p>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="d-flex justify-content-between mt-3">
+                            <a href="{% url 'services:categories_list' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Назад
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-1"></i>Отправить
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

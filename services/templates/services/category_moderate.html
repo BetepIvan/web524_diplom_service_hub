@@ -1,0 +1,32 @@
+{% extends 'services/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">Модерация категории</h4>
+                </div>
+                <div class="card-body">
+                    <h5>{{ object.name }}</h5>
+                    <p>{{ object.description }}</p>
+                    <hr>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="d-flex justify-content-between mt-3">
+                            <a href="{% url 'services:categories_list' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Назад
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-1"></i>Сохранить
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

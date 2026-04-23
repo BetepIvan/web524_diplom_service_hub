@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django import forms
 
-from services.models import Service, ServiceImage
+from services.models import Service, ServiceImage, Category
 from users.forms import StyleFormMixin
 
 
@@ -35,3 +35,9 @@ class ServiceImageForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = ServiceImage
         fields = '__all__'
+
+
+class CategoryForm(StyleFormMixin, forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ('name', 'description', 'icon', 'image')

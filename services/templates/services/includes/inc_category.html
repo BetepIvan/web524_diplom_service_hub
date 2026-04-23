@@ -1,13 +1,50 @@
-<div class="col-md-4">
-  <div class="card mb-4 box-shadow">
-    <div class="card-body">
-      <p class="card-text">{{ object.name }}</p>
-      <div class="d-flex justify-between align-items-center">
-        <div class="btn-group">
-          <a href="{% url 'services:category_services' object.pk %}" type="button"
-             class="btn btn-sm btn-outline-secondary">К услугам</a>
+{% load services_tags %}
+
+<div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm">
+        {% if object.image %}
+        <img src="{{ object.image.url }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ object.name }}">
+        {% else %}
+        <div class="card-img-top bg-light text-center py-5">
+            <i class="{{ object.icon|default:'fas fa-wrench' }} fa-4x text-muted"></i>
         </div>
-      </div>
+        {% endif %}
+        <div class="card-body">
+            <h5 class="card-title">{{ object.name }}</h5>
+            <p class="card-text text-muted">{{ object.description|truncatewords:15|default:"Нет описания" }}</p>
+            <a href="{% url 'services:category_services' object.pk %}" class="btn btn-outline-primary btn-sm w-100">
+                <i class="fas fa-arrow-right me-1"></i>К услугам
+            </a>
+        </div>
+
+        <!-- Админ и модератор видят кнопки управления -->
+        {% if user.role == 'admin' or user.role == 'moderator' %}
+        <div class="card-footer bg-transparent">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    {% if not object.is_moderated %}
+                    <span class="badge bg-warning text-dark">На модерации</span>
+                    {% else %}
+                    <span class="badge bg-success">Одобрена</span>
+                    {% endif %}
+                </div>
+                <div class="btn-group">
+                    <a href="{% url 'services:category_moderate' object.pk %}" class="btn btn-sm btn-outline-info">
+                        <i class="fas fa-check"></i>
+                    </a>
+                    <a href="{% url 'services:category_edit' object.pk %}" class="btn btn-sm btn-outline-warning">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url 'services:category_delete' object.pk %}" class="btn btn-sm btn-outline-danger">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% elif not object.is_moderated and object.created_by == user %}
+        <div class="card-footer bg-transparent">
+            <span class="badge bg-warning text-dark w-100">Ожидает модерации</span>
+        </div>
+        {% endif %}
     </div>
-  </div>
 </div>

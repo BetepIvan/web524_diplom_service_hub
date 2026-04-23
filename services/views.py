@@ -7,7 +7,7 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 
 from services.models import Category, Service, ServiceImage
-from services.forms import ServiceForm, ServiceCreateForm, ServiceAdminForm, ServiceImageForm
+from services.forms import ServiceForm, ServiceCreateForm, ServiceAdminForm, ServiceImageForm, CategoryForm
 from services.services import send_views_mail
 from users.services import send_service_creation  # нужно будет переименовать в users/services.py
 from users.models import UserRoles
@@ -15,21 +15,120 @@ from users.models import UserRoles
 
 def index(request):
     context = {
-        'object_list': Category.objects.all()[:3],
+        'object_list': Category.objects.filter(is_active=True, is_moderated=True, is_main=True)[:6],
         'title': 'Услуги мастеров - Главная',
         'description': 'Добро пожаловать на платформу услуг мастеров! Здесь вы найдете лучших специалистов в своем деле, информацию о каждой услуге, а также сможете выбрать себе профессионала.'
     }
     return render(request, 'services/index.html', context)
 
 
+# Для всех - список категорий
 class CategoryListView(ListView):
     model = Category
+    template_name = 'services/categories.html'
+    context_object_name = 'categories'
+    paginate_by = 9
     extra_context = {
         'title': 'Все категории услуг',
-        'description': 'Сантехника, электрика, ремонт, клининг и многое другое — все в одном месте. Изучайте категории, знакомьтесь с мастерами и выбирайте того, кто вам подходит.'
+        'description': 'Все доступные категории услуг'
     }
-    template_name = 'services/categories.html'
-    paginate_by = 3
+
+    def get_queryset(self):
+        # Админ и модератор видят все категории
+        if self.request.user.is_authenticated and self.request.user.role in ['admin', 'moderator']:
+            return Category.objects.all()
+        # Остальные видят только активные и прошедшие модерацию
+        return Category.objects.filter(is_active=True, is_moderated=True)
+
+
+# Для админа - управление категориями
+class CategoryCreateView(LoginRequiredMixin, CreateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = 'services/category_form.html'
+    success_url = reverse_lazy('services:categories_list')
+    extra_context = {'title': 'Создать категорию'}
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.role != 'moderator':
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        form.instance.is_moderated = True
+        form.instance.is_active = True
+        form.instance.is_main = False  # Показывать на главной
+        return super().form_valid(form)
+
+
+class CategoryUpdateView(LoginRequiredMixin, UpdateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = 'services/category_form.html'
+    success_url = reverse_lazy('services:categories_list')
+    extra_context = {'title': 'Редактировать категорию'}
+
+    def dispatch(self, request, *args, **kwargs):
+        # Админ и модератор могут редактировать
+        if request.user.role not in ['admin', 'moderator']:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+
+class CategoryDeleteView(LoginRequiredMixin, DeleteView):
+    model = Category
+    template_name = 'services/category_confirm_delete.html'
+    success_url = reverse_lazy('services:categories_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        # Админ и модератор могут удалять
+        if request.user.role not in ['admin', 'moderator']:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+
+class CategoryModerateView(LoginRequiredMixin, UpdateView):
+    model = Category
+    fields = ('is_moderated', 'is_active')  # Убрали 'is_main'
+    template_name = 'services/category_moderate.html'
+    success_url = reverse_lazy('services:categories_list')
+    extra_context = {'title': 'Модерация категории'}
+
+    def dispatch(self, request, *args, **kwargs):
+        # Только модератор и админ могут модерировать
+        if request.user.role not in ['admin', 'moderator']:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        # Если пользователь модератор - скрываем поле is_main
+        if self.request.user.role == 'moderator':
+            if 'is_main' in form.fields:
+                del form.fields['is_main']
+        return form
+
+
+# Для мастеров - предложить категорию
+class CategorySuggestView(LoginRequiredMixin, CreateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = 'services/category_suggest.html'
+    success_url = reverse_lazy('services:categories_list')
+    extra_context = {'title': 'Предложить категорию'}
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.role != 'master':
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        form.instance.is_moderated = False
+        form.instance.is_active = True
+        form.instance.is_main = False  # Не показывать на главной
+        return super().form_valid(form)
 
 
 class ServicesByCategoryListView(ListView):

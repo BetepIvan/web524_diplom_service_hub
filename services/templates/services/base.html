@@ -13,7 +13,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <!-- Блок для дополнительных стилей -->
-    {% block extra_head %}{% endblock %}
+    {% block extra_head %}
+        <style>
+            .category-card {
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                cursor: pointer;
+            }
+            .category-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            }
+        </style>
+    {% endblock %}
 
     <script>
         const getStoredTheme = () => localStorage.getItem('theme');
@@ -37,44 +48,6 @@
 
     <!-- Шапка сайта -->
     <header data-bs-theme="dark">
-<!--        <div class="collapse text-bg-dark" id="navbarHeader">-->
-<!--            <div class="container">-->
-<!--                <div class="row">-->
-<!--                    <div class="col-sm-8 col-md-7 py-4">-->
-<!--                        <h4>О нас</h4>-->
-<!--                        <p class="text-body-secondary">-->
-<!--                            Сервис Мастеров — платформа, где вы можете найти профессионалов для любых задач.-->
-<!--                            От сантехники до ремонта — проверенные мастера с отзывами.-->
-<!--                        </p>-->
-<!--                    </div>-->
-<!--                    <div class="col-sm-4 offset-md-1 py-4">-->
-<!--                        <h4>Меню</h4>-->
-<!--                        <ul class="list-unstyled">-->
-<!--                            <li><a href="{% url 'services:index' %}" class="text-white">Главная</a></li>-->
-<!--                            <li><a href="{% url 'services:categories' %}" class="text-white">Категории</a></li>-->
-<!--                            <li><a href="{% url 'services:services_list' %}" class="text-white">Услуги</a></li>-->
-<!--                            <li><a href="{% url 'reviews:reviews_list' %}" class="text-white">Отзывы</a></li>-->
-<!--                            {% if user.is_authenticated and user.role == 'master' %}-->
-<!--                            <li><a href="{% url 'services:service_create' %}" class="text-white">Добавить услугу</a></li>-->
-<!--                            {% endif %}-->
-<!--                            {% if user.is_authenticated %}-->
-<!--                                <li><a href="{% url 'users:users_list' %}" class="text-white">Пользователи</a></li>-->
-<!--                                <li><a href="{% url 'users:user_profile' %}" class="text-white">Профиль</a></li>-->
-<!--                                <li>-->
-<!--                                    <form method="post" action="{% url 'users:user_logout' %}" class="d-inline">-->
-<!--                                        {% csrf_token %}-->
-<!--                                        <button type="submit" class="btn btn-link text-white p-0 text-decoration-none">Выход</button>-->
-<!--                                    </form>-->
-<!--                                </li>-->
-<!--                            {% else %}-->
-<!--                                <li><a href="{% url 'users:user_login' %}" class="text-white">Вход</a></li>-->
-<!--                                <li><a href="{% url 'users:user_register' %}" class="text-white">Регистрация</a></li>-->
-<!--                            {% endif %}-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
 
         <div class="navbar navbar-dark bg-dark shadow-sm">
             <div class="container">
@@ -91,7 +64,7 @@
                 </div>
 
                 <div class="d-flex gap-3">
-                    <a href="{% url 'services:categories' %}" class="btn btn-outline-light btn-sm">
+                    <a href="{% url 'services:categories_list' %}" class="btn btn-outline-light btn-sm">
                         <i class="fas fa-tag me-1"></i>Категории
                     </a>
                     <a href="{% url 'services:services_list' %}" class="btn btn-outline-light btn-sm">

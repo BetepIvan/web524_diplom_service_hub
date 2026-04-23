@@ -1,0 +1,31 @@
+{% extends 'services/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Удаление категории</h4>
+                </div>
+                <div class="card-body text-center">
+                    <i class="fas fa-exclamation-triangle fa-4x text-warning mb-3"></i>
+                    <p class="lead">Вы уверены, что хотите удалить категорию <strong>"{{ object.name }}"</strong>?</p>
+                    <p class="text-muted">Это действие удалит все связанные услуги. Отменить невозможно.</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-center gap-3 mt-3">
+                            <a href="{% url 'services:categories_list' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i>Отмена
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-1"></i>Удалить
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

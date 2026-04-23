@@ -8,6 +8,18 @@ class Category(models.Model):
     """Категория услуг (сантехник, электрик, ремонт и т.д.)"""
     name = models.CharField(max_length=100, verbose_name='Категория')
     description = models.CharField(max_length=1000, verbose_name='Описание', **NULLABLE)
+    icon = models.CharField(max_length=50, default='fas fa-image', verbose_name='Иконка')
+    image = models.ImageField(upload_to='categories/', **NULLABLE, verbose_name='Изображение')
+    is_active = models.BooleanField(default=True, verbose_name='Активна')
+    is_moderated = models.BooleanField(default=False, verbose_name='Прошла модерацию')
+    is_main = models.BooleanField(default=False, verbose_name='Показывать на главной')
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        **NULLABLE,
+        verbose_name='Создал'
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
     def __str__(self):
         return self.name
@@ -15,6 +27,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'категория'
         verbose_name_plural = 'категории'
+        ordering = ['name']
 
 
 class Service(models.Model):

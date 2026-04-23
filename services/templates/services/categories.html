@@ -1,10 +1,34 @@
 {% extends 'services/base.html' %}
 
 {% block content %}
-<div class="row">
-     {% for object in object_list %}
-        {% include 'services/includes/inc_category.html' with object=object %}
-     {% endfor %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Категории услуг</h1>
+        <div>
+            {% if user.role == 'admin' %}
+            <a href="{% url 'services:category_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i>Создать категорию
+            </a>
+            {% elif user.role == 'master' %}
+            <a href="{% url 'services:category_suggest' %}" class="btn btn-outline-primary">
+                <i class="fas fa-lightbulb me-1"></i>Предложить категорию
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        {% for object in object_list %}
+            {% include 'services/includes/inc_category.html' with object=object %}
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
+                <h3>Категории не найдены</h3>
+                <p class="text-muted">Категории появятся после добавления</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% include 'services/includes/inc_pagination.html' %}
 </div>
-{% include 'services/includes/inc_pagination.html' %}
 {% endblock %}
