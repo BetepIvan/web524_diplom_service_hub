@@ -98,19 +98,48 @@ class UserLogoutView(LogoutView):
     }
 
 
+# class UserListView(LoginRequiredMixin, ListView):
+#     model = User
+#     extra_context = {
+#         'title': 'Все наши пользователи'
+#     }
+#     template_name = 'users/users.html'
+#     paginate_by = 3
+#
+#     def get_queryset(self):
+#         queryset = super().get_queryset()
+#         queryset = queryset.filter(is_active=True)
+#         return queryset
+
 class UserListView(LoginRequiredMixin, ListView):
     model = User
-    extra_context = {
-        'title': 'Все наши пользователи'
-    }
     template_name = 'users/users.html'
-    paginate_by = 3
+    paginate_by = 6
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.filter(is_active=True)
+        user = self.request.user
+        queryset = User.objects.filter(is_active=True)
+
+        # Мастера и клиенты видят только мастеров
+        if user.role in ['master', 'user']:
+            queryset = queryset.filter(role='master')
+        # Админ и модератор видят всех
+        # else: queryset = queryset (все пользователи)
+
         return queryset
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        if user.role in ['master', 'user']:
+            context['title'] = 'Мастера'
+            context['description'] = 'Выберите мастера для вашей задачи'
+        else:
+            context['title'] = 'Управление пользователями'
+            context['description'] = 'Полный список пользователей системы'
+
+        return context
 
 class UserDetailView(DetailView):
     model = User

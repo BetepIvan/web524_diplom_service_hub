@@ -1,12 +1,52 @@
 {% extends 'services/base.html' %}
 {% load user_tags %}
+
 {% block content %}
-<div class="container">
+<div class="container mt-4">
     <div class="row">
-        {% for object in object_list %}
-        {% include 'users/includes/inc_user_card.html' with object=object %}
-        {% endfor %}
+        <!-- Левая колонка: список карточек -->
+        <div class="col-md-8">
+            {% for object in object_list %}
+                {% include 'users/includes/inc_user_card.html' with object=object %}
+            {% endfor %}
+
+            <!-- Пагинация -->
+            {% if is_paginated %}
+                {% include 'services/includes/inc_pagination.html' %}
+            {% endif %}
+        </div>
+
+        <!-- Правая колонка: фильтры -->
+        <div class="col-md-4">
+            <div class="card shadow-sm sticky-top" style="top: 20px; z-index: 100;">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Фильтры</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" action="">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Город</label>
+                            <input type="text" name="search" class="form-control" placeholder="Найти..." value="{{ request.GET.search }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Роль</label>
+                            <select name="role" class="form-select">
+                                <option value="">Все роли</option>
+                                <option value="master" {% if request.GET.role == 'master' %}selected{% endif %}>Мастер</option>
+                                <option value="user" {% if request.GET.role == 'user' %}selected{% endif %}>Клиент</option>
+                                <option value="moderator" {% if request.GET.role == 'moderator' %}selected{% endif %}>Модератор</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Применить</button>
+                            <a href="{% url 'users:users_list' %}" class="btn btn-light border">Сбросить</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    {% include 'services/includes/inc_pagination.html' %}
 </div>
 {% endblock %}
