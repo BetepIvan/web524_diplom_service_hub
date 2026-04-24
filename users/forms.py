@@ -3,9 +3,9 @@ from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm, Auth
 from django.core.exceptions import ValidationError
 from django.contrib.auth import password_validation
 
-
 from users.models import User
 from users.validators import validate_password
+from services.models import Category
 
 
 class StyleFormMixin:
@@ -19,14 +19,12 @@ class StyleFormMixin:
 
 
 class UserForm(StyleFormMixin, forms.ModelForm):
-
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'phone', 'avatar')
+        fields = ('email', 'first_name', 'last_name', 'phone', 'avatar', 'location')
 
 
 class UserRegisterForm(StyleFormMixin, UserCreationForm):
-
     class Meta:
         model = User
         fields = ('email',)
@@ -46,7 +44,7 @@ class UserLoginForm(StyleFormMixin, AuthenticationForm):
 class UserUpdateForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'phone', 'telegram', 'max_messenger', 'avatar')
+        fields = ('email', 'first_name', 'last_name', 'phone', 'telegram', 'max_messenger', 'avatar', 'location')
 
 
 class UserChangePasswordForm(StyleFormMixin, PasswordChangeForm):
@@ -61,3 +59,37 @@ class UserChangePasswordForm(StyleFormMixin, PasswordChangeForm):
             )
         password_validation.validate_password(password2, self.user)
         return password2
+
+
+class BecomeMasterForm(StyleFormMixin, forms.ModelForm):
+    work_days = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'Пн-Сб: 09:00-18:00, Вс: выходной'}),
+        label='График работы'
+    )
+
+    class Meta:
+        model = User
+        fields = ('categories', 'experience', 'education', 'about', 'service_description', 'phone', 'telegram', 'location', 'work_days')
+        widgets = {
+            'categories': forms.CheckboxSelectMultiple(),
+            'about': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Расскажите о себе, своих интересах, почему клиенты должны выбрать вас...'}),
+            'service_description': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Опишите ваши услуги, что вы предлагаете, особенности работы...'}),
+            'location': forms.TextInput(attrs={'placeholder': 'Например: Москва, ул. Ленина 1'}),
+        }
+
+class MasterProfileForm(StyleFormMixin, forms.ModelForm):
+    work_days = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'Пн-Сб: 09:00-18:00, Вс: выходной'}),
+        label='График работы'
+    )
+
+    class Meta:
+        model = User
+        fields = ('categories', 'experience', 'education', 'about', 'service_description', 'portfolio', 'work_days')
+        widgets = {
+            'categories': forms.CheckboxSelectMultiple(),
+            'about': forms.Textarea(attrs={'rows': 5}),
+            'service_description': forms.Textarea(attrs={'rows': 5}),
+        }

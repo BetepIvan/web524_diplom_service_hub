@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from services.models import Category, Service
+from services.models import Category, Service, Portfolio
 
 
 @admin.register(Category)
@@ -16,3 +16,10 @@ class ServiceAdmin(admin.ModelAdmin):
     list_display = ('pk', 'title', 'category', 'owner')
     list_filter = ('category',)
     ordering = ('title',)
+
+
+@admin.register(Portfolio)
+class PortfolioAdmin(admin.ModelAdmin):
+    list_display = ('title', 'master', 'price', 'created_at')
+    list_filter = ('master',)
+    search_fields = ('title', 'description')

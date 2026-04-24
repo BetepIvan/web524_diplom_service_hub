@@ -4,7 +4,7 @@ from services.views import (
     ServiceCreateView, ServiceDetailView, ServiceUpdateView, ServiceDeleteView,
     service_toggle_activity, ServiceDeactivatedListView, ServiceSearchListView,
     CategorySearchListView, AllSearchView,
-    CategoryCreateView, CategoryUpdateView, CategoryDeleteView, CategorySuggestView, CategoryModerateView
+    CategoryCreateView, CategoryUpdateView, CategoryDeleteView, CategorySuggestView, CategoryModerateView, ServiceByMasterListView, PortfolioCreateView
 )
 from services.apps import ServicesConfig
 from django.views.decorators.cache import cache_page, never_cache
@@ -35,4 +35,8 @@ urlpatterns = [
     path('services/update/<int:pk>/', never_cache(ServiceUpdateView.as_view()), name='service_update'),
     path('services/toggle/<int:pk>/', service_toggle_activity, name='service_toggle_activity'),
     path('services/delete/<int:pk>/', ServiceDeleteView.as_view(), name='service_delete'),
+
+    path('master/<int:pk>/services/', ServiceByMasterListView.as_view(), name='master_services'),
+
+    path('portfolio/create/', PortfolioCreateView.as_view(), name='portfolio_create'),
 ]

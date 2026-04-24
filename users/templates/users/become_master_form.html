@@ -1,0 +1,77 @@
+{% extends 'services/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Стать мастером</h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-4">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Заполните информацию о себе, чтобы стать мастером. После заполнения ваш профиль будет отправлен на модерацию.
+                    </p>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">О себе</label>
+                            <textarea name="about" class="form-control" rows="5" placeholder="Расскажите о себе, своих интересах, почему клиенты должны выбрать вас..."></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Категории услуг</label>
+                            <div class="row">
+                                {% for category in form.categories.field.queryset %}
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="categories" value="{{ category.pk }}" 
+                                               class="form-check-input" id="cat_{{ category.pk }}">
+                                        <label class="form-check-label" for="cat_{{ category.pk }}">
+                                            {{ category.name }}
+                                        </label>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <p class="text-muted">Нет доступных категорий</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Опыт (лет)</label>
+                            <input type="number" name="experience" class="form-control" value="0" min="0">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Образование</label>
+                            <input type="text" name="education" class="form-control" placeholder="Например: Высшее, Курсы и т.д.">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Описание деятельности</label>
+                            <textarea name="service_description" class="form-control" rows="5" placeholder="Опишите ваши услуги, что вы предлагаете, особенности работы..."></textarea>
+                        </div>
+                        
+<!--                        <div class="mb-3">-->
+<!--                            <label class="form-label fw-bold">Портфолио (фото)</label>-->
+<!--                            <input type="file" name="portfolio" class="form-control" accept="image/*">-->
+<!--                        </div>-->
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'users:user_profile' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Назад
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check me-1"></i>Стать мастером
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

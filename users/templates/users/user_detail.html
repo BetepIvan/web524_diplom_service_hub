@@ -66,11 +66,59 @@
                                     <strong>MAX:</strong> {{ object.max_messenger }}
                                 </li>
                                 {% endif %}
+
+                                <!-- Информация мастера -->
                                 {% if object.role == 'master' %}
-                                <li class="mb-3">
-                                    <i class="fas fa-tools text-warning me-2" style="width: 25px;"></i>
-                                    <strong>Услуг:</strong> {{ object.service_set.count }}
-                                </li>
+                                    {% if object.experience %}
+                                    <li class="mb-3">
+                                        <i class="fas fa-briefcase text-warning me-2" style="width: 25px;"></i>
+                                        <strong>Опыт:</strong> {{ object.experience }} лет
+                                    </li>
+                                    {% endif %}
+                                    {% if object.education %}
+                                    <li class="mb-3">
+                                        <i class="fas fa-graduation-cap text-info me-2" style="width: 25px;"></i>
+                                        <strong>Образование:</strong> {{ object.education }}
+                                    </li>
+                                    {% endif %}
+                                    {% if object.about %}
+                                    <li class="mb-3">
+                                        <i class="fas fa-info-circle text-secondary me-2" style="width: 25px;"></i>
+                                        <strong>О себе:</strong> {{ object.about }}
+                                    </li>
+                                    {% endif %}
+                                    {% if object.portfolio %}
+                                    <li class="mb-3">
+                                        <i class="fas fa-images text-primary me-2" style="width: 25px;"></i>
+                                        <strong>Портфолио:</strong>
+                                        <a href="{{ object.portfolio.url }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                                            <i class="fas fa-eye me-1"></i>Смотреть
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                    <li class="mb-3">
+                                        <i class="fas fa-tools text-warning me-2" style="width: 25px;"></i>
+                                        <strong>Услуг:</strong> {{ object.service_set.count }}
+                                    </li>
+                                    <li class="mb-3">
+                                        <strong>Категории:</strong>
+                                        <div class="mt-2">
+                                            {% for category in object.categories.all %}
+                                                <span class="badge bg-secondary me-1">{{ category.name }}</span>
+                                            {% empty %}
+                                                <span class="text-muted">Не указаны</span>
+                                            {% endfor %}
+                                        </div>
+                                    </li>
+                                    {% if object.is_master_approved %}
+                                        <li class="mb-3">
+                                            <span class="badge bg-success">Профиль подтверждён</span>
+                                        </li>
+                                    {% else %}
+                                        <li class="mb-3">
+                                            <span class="badge bg-warning text-dark">Профиль на модерации</span>
+                                        </li>
+                                    {% endif %}
                                 {% endif %}
                             </ul>
 
@@ -79,7 +127,7 @@
                                     <i class="fas fa-arrow-left me-1"></i>Назад
                                 </a>
                                 {% if object.role == 'master' %}
-                                <a href="{% url 'services:index' %}" class="btn btn-primary">
+                                <a href="{% url 'services:master_services' object.pk %}" class="btn btn-primary">
                                     <i class="fas fa-tools me-1"></i>Услуги мастера
                                 </a>
                                 {% endif %}

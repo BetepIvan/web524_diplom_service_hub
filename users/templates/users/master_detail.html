@@ -1,0 +1,311 @@
+{% extends 'services/base.html' %}
+{% load user_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Основная колонка -->
+        <div class="col-md-8">
+            <!-- Карточка профиля мастера -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-user-circle me-2"></i>Профиль мастера</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Аватар -->
+                        <div class="col-md-3 text-center">
+                            {% if master.avatar %}
+                                <img src="{{ master.avatar.url }}" class="rounded-3 mb-2" style="width: 160px; height: 160px; object-fit: cover; border: 3px solid rgba(255,255,255,0.5);">
+                            {% else %}
+                                <i class="fas fa-user-circle fa-7x text-secondary"></i>
+                            {% endif %}
+                        </div>
+
+                        <!-- Информация -->
+                        <div class="col-md-9">
+                            <h2>{{ master.first_name }} {{ master.last_name }}</h2>
+                            <p class="text-muted">
+                                <i class="fas fa-map-marker-alt me-1"></i>
+                                {{ master.location|default:"Город не указан" }}
+                            </p>
+
+                            <!-- Кнопки действий -->
+                            <div class="d-flex gap-2 mb-3">
+                                <button class="btn btn-outline-primary btn-sm" onclick="alert('Телефон: {{ master.phone|default:"не указан" }}')">
+                                    <i class="fas fa-phone me-1"></i>Телефон
+                                </button>
+                                <button class="btn btn-outline-info btn-sm" onclick="alert('Чат с мастером пока в разработке')">
+                                    <i class="fab fa-telegram me-1"></i>Чат
+                                </button>
+                                <button class="btn btn-success btn-sm" onclick="alert('Заказ услуги пока в разработке')">
+                                    <i class="fas fa-shopping-cart me-1"></i>Заказ
+                                </button>
+                            </div>
+
+                            <!-- О себе -->
+                            <div class="mt-3">
+                                <h6>О себе</h6>
+                                {% if master.about %}
+                                    <div class="text-muted">
+                                        <span id="aboutShort">{{ master.about|truncatechars:150 }}</span>
+                                        <span id="aboutFull" style="display: none;">{{ master.about }}</span>
+                                    </div>
+                                    {% if master.about|length > 150 %}
+                                    <button class="btn btn-link btn-sm p-0" type="button" id="aboutToggleBtn">
+                                        <span class="text-primary" id="aboutToggleText">Развернуть</span>
+                                    </button>
+                                    {% endif %}
+                                {% else %}
+                                    <p class="text-muted">Мастер пока ничего не рассказал о себе</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Примеры работ (портфолио) -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-images me-2"></i>Примеры работ</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% if master.portfolio_items.all %}
+                            {% for example in master.portfolio_items.all %}
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <img src="{{ example.image.url }}" class="card-img-top" style="height: 150px; object-fit: cover;" alt="{{ example.title }}">
+                                    <div class="card-body">
+                                        <h6 class="card-title">{{ example.title }}</h6>
+                                        <p class="card-text small">{{ example.description|truncatewords:10 }}</p>
+                                        <p class="card-text text-primary fw-bold">{{ example.price }} ₽</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted text-center">Пока нет примеров работ</p>
+                        {% endif %}
+                    </div>
+                    {% if user == master %}
+                    <div class="text-center mt-3">
+                        <a href="{% url 'services:portfolio_create' %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-plus me-1"></i>Добавить пример работы
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Информация о работе -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i>Информация о работе</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Категории услуг</h6>
+                            <div class="mb-3">
+                                {% for category in master.categories.all %}
+                                    <span class="badge bg-primary me-1 mb-1">{{ category.name }}</span>
+                                {% empty %}
+                                    <span class="text-muted">Не указаны</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Образование</h6>
+                            <p class="text-muted">{{ master.education|default:"Не указано" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Опыт работы</h6>
+                            <p class="text-muted">{{ master.experience }} лет</p>
+                        </div>
+                         <div class="col-md-6">
+                            <h6>Дни и время работы</h6>
+                            <p class="text-muted">{{ master.work_days|default:"Не указан" }}</p>
+                         </div>
+                    </div>
+
+                    <!-- Описание деятельности -->
+                    <div class="mt-3">
+                        <h6>Описание деятельности</h6>
+                        {% if master.service_description %}
+                            <div class="text-muted">
+                                <span id="serviceShort">{{ master.service_description|truncatechars:150 }}</span>
+                                <span id="serviceFull" style="display: none;">{{ master.service_description }}</span>
+                            </div>
+                            {% if master.service_description|length > 150 %}
+                            <button class="btn btn-link btn-sm p-0" type="button" id="serviceToggleBtn">
+                                <span class="text-primary" id="serviceToggleText">Развернуть</span>
+                            </button>
+                            {% endif %}
+                        {% else %}
+                            <p class="text-muted">Мастер пока не добавил описание услуг</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Услуги с ценами -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-tools me-2"></i>Услуги и цены</h5>
+                    {% if user == master %}
+                    <a href="{% url 'services:service_create' %}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-plus me-1"></i>Добавить
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for service in services %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">{{ service.title }}</h6>
+                                    <small class="text-muted">{{ service.category.name }}</small>
+                                    {% if service.description %}
+                                    <p class="mb-0 small text-muted">{{ service.description|truncatewords:15 }}</p>
+                                    {% endif %}
+                                </div>
+                                <div class="text-end">
+                                    <span class="fw-bold text-primary">{{ service.price|default:"договорная" }} ₽</span>
+                                    <a href="{% url 'services:service_detail' service.pk %}" class="btn btn-sm btn-outline-info ms-2">
+                                        <i class="fas fa-info-circle"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="list-group-item text-center text-muted">
+                            Услуги не добавлены
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Отзывы -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-star me-2"></i>Отзывы</h5>
+                    <button class="btn btn-sm btn-outline-light" onclick="alert('Добавление отзыва в разработке')">
+                        <i class="fas fa-pen me-1"></i>Оставить отзыв
+                    </button>
+                </div>
+                <div class="card-body">
+                    {% for review in reviews %}
+                    <div class="border-bottom pb-3 mb-3">
+                        <div class="d-flex justify-content-between">
+                            <strong>{{ review.author.get_full_name|default:review.author.email }}</strong>
+                            <small class="text-muted">{{ review.created|date:"d.m.Y" }}</small>
+                        </div>
+                        <p class="mb-1">{{ review.content }}</p>
+                        <div class="text-warning">
+                            ★★★★★
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted text-center">Пока нет отзывов</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Правая колонка -->
+        <div class="col-md-4">
+            <!-- Статистика -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Статистика</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="row">
+                        <div class="col-6">
+                            <h3>{{ services.count }}</h3>
+                            <small class="text-muted">Услуг</small>
+                        </div>
+                        <div class="col-6">
+                            <h3>{{ reviews.count }}</h3>
+                            <small class="text-muted">Отзывов</small>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="text-warning">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                        <span class="text-dark ms-2">4.8 ({{ reviews.count }})</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Контактная информация -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-address-card me-2"></i>Контакты</h5>
+                </div>
+                <div class="card-body">
+                    <p><i class="fas fa-envelope me-2"></i> {{ master.email }}</p>
+                    <p><i class="fas fa-phone me-2"></i> {{ master.phone|default:"Не указан" }}</p>
+                    <p><i class="fab fa-telegram me-2"></i> {{ master.telegram|default:"Не указан" }}</p>
+                    <hr>
+                    <button class="btn btn-primary w-100" onclick="alert('Связь с мастером в разработке')">
+                        <i class="fas fa-paper-plane me-1"></i>Связаться
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Для блока "О себе"
+    const aboutBtn = document.getElementById('aboutToggleBtn');
+    if (aboutBtn) {
+        aboutBtn.addEventListener('click', function() {
+            const short = document.getElementById('aboutShort');
+            const full = document.getElementById('aboutFull');
+            const toggleText = document.getElementById('aboutToggleText');
+
+            if (short.style.display !== 'none') {
+                short.style.display = 'none';
+                full.style.display = 'inline';
+                toggleText.textContent = 'Свернуть';
+            } else {
+                short.style.display = 'inline';
+                full.style.display = 'none';
+                toggleText.textContent = 'Развернуть';
+            }
+        });
+    }
+
+    // Для блока "Описание деятельности"
+    const serviceBtn = document.getElementById('serviceToggleBtn');
+    if (serviceBtn) {
+        serviceBtn.addEventListener('click', function() {
+            const short = document.getElementById('serviceShort');
+            const full = document.getElementById('serviceFull');
+            const toggleText = document.getElementById('serviceToggleText');
+
+            if (short.style.display !== 'none') {
+                short.style.display = 'none';
+                full.style.display = 'inline';
+                toggleText.textContent = 'Свернуть';
+            } else {
+                short.style.display = 'inline';
+                full.style.display = 'none';
+                toggleText.textContent = 'Развернуть';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'services/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="card shadow-sm">
+                <div class="card-body py-5">
+                    <i class="fas fa-check-circle text-success fa-5x mb-3"></i>
+                    <h3>Поздравляем! Вы стали мастером!</h3>
+                    <p class="text-muted">Ваш профиль отправлен на модерацию. После подтверждения вы сможете добавлять услуги.</p>
+                    <hr>
+                    <a href="{% url 'users:user_profile' %}" class="btn btn-primary">
+                        <i class="fas fa-user me-1"></i>Вернуться в профиль
+                    </a>
+                    <a href="{% url 'services:index' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-home me-1"></i>На главную
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

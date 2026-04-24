@@ -77,7 +77,6 @@ class Service(models.Model):
         ordering = ['-created_at']
 
 
-# Модель DogParent удаляем, либо переделываем в ServiceImage
 class ServiceImage(models.Model):
     """Дополнительные фото для услуги"""
     service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='images', verbose_name='Услуга')
@@ -90,3 +89,25 @@ class ServiceImage(models.Model):
     class Meta:
         verbose_name = 'фото услуги'
         verbose_name_plural = 'фото услуг'
+
+class Portfolio(models.Model):
+    """Портфолио мастера - примеры выполненных работ"""
+    master = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='portfolio_items',
+        verbose_name='Мастер'
+    )
+    title = models.CharField(max_length=200, verbose_name='Название работы')
+    description = models.TextField(verbose_name='Описание', **NULLABLE)
+    image = models.ImageField(upload_to='portfolio/', verbose_name='Фото')
+    price = models.DecimalField(max_digits=10, decimal_places=2, **NULLABLE, verbose_name='Цена работы')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Портфолио'
+        verbose_name_plural = 'Портфолио'
+        ordering = ['-created_at']
