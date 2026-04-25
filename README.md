@@ -60,7 +60,7 @@ MS_SQL_KEY=your_password
 MS_SQL_SERVER='localhost\SQLEXPRESS'
 MS_SQL_DATABASE=handyman_services_db
 MS_SQL_PAD_DATABASE=pad_database
-MS_SQL_DRIVER="ODBC Driver 17 for SQL Server"
+MS_SQL_DRIVER=your_version  (проверено на "ODBC Driver 17 for SQL Server")
 
 # Email
 EMAIL_HOST_USER=your_email@yandex.ru
@@ -147,6 +147,7 @@ User (Пользователь) — расширенная модель
 | `portfolio` | ImageField | Портфолио |
 | `categories` | ManyToManyField | Категории услуг |
 | `is_master_approved` | BooleanField | Подтверждён ли мастер |
+
 Category (Категория услуг)
 
 | Поле | Описание |
@@ -158,6 +159,7 @@ Category (Категория услуг)
 | `is_active` | Активна |
 | `is_moderated` | Прошла модерацию |
 | `is_main` | Показывать на главной |
+
 Service (Шаблон услуги / Библиотека)
 
 | Поле | Описание |
@@ -166,6 +168,7 @@ Service (Шаблон услуги / Библиотека)
 | `category` | Категория (FK) |
 | `description` | Описание |
 | `is_template` | Шаблон услуги |
+
 MasterService (Услуга мастера)
 
 | Поле | Описание |
@@ -174,6 +177,7 @@ MasterService (Услуга мастера)
 | `service_template` | Шаблон услуги (FK) |
 | `price` | Цена (₽) |
 | `is_active` | Активна |
+
 Portfolio (Портфолио)
 
 | Поле | Описание |
@@ -183,6 +187,7 @@ Portfolio (Портфолио)
 | `description` | Описание |
 | `image` | Фото |
 | `price` | Цена работы |
+
 Review (Отзывы)
 
 | Поле | Описание |
@@ -266,6 +271,7 @@ Review (Отзывы)
 - 🔎 Поиском и фильтрацией с использованием Q-объектов
 - ⭐ Подсчётом среднего рейтинга и отображением звёзд
 - 📄 Пагинацией и вёрсткой на Bootstrap
+- 🚨 Политика персональных данных
 
 ---
 
