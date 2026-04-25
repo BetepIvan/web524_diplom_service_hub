@@ -3,6 +3,14 @@
 
 {% block content %}
 <div class="container mt-4">
+    {% if current_service_id %}
+    <div class="mb-3">
+        <a href="{% url 'services:categories_list' %}" class="btn btn-sm btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Назад к категориям
+        </a>
+    </div>
+    {% endif %}
+
     <div class="row">
         <!-- Левая колонка: список карточек -->
         <div class="col-md-8">
@@ -24,6 +32,10 @@
                 </div>
                 <div class="card-body">
                     <form method="get" action="">
+                        {% if current_service_id %}
+                        <input type="hidden" name="service" value="{{ current_service_id }}">
+                        {% endif %}
+
                         <div class="mb-3">
                             <label class="form-label fw-bold">Поиск</label>
                             <input type="text" name="search" class="form-control" placeholder="Имя или email..." value="{{ request.GET.search }}">
@@ -41,7 +53,7 @@
 
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">Применить</button>
-                            <a href="{% url 'users:users_list' %}" class="btn btn-light border">Сбросить</a>
+                            <a href="{% url 'users:users_list' %}{% if current_service_id %}?service={{ current_service_id }}{% endif %}" class="btn btn-light border">Сбросить</a>
                         </div>
                     </form>
                 </div>

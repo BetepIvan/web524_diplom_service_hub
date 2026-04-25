@@ -4,16 +4,17 @@
 {% block content %}
 <div class="container mt-4">
     <div class="row">
-        <!-- Основная колонка -->
+        <!-- ЛЕВАЯ КОЛОНКА (основной контент) - 8 колонок из 12 -->
         <div class="col-md-8">
-            <!-- Карточка профиля мастера -->
+
+            <!-- Карточка 1: Профиль мастера -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-secondary text-white">
                     <h5 class="mb-0"><i class="fas fa-user-circle me-2"></i>Профиль мастера</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <!-- Аватар -->
+                        <!-- Аватар (3 колонки) -->
                         <div class="col-md-3 text-center">
                             {% if master.avatar %}
                                 <img src="{{ master.avatar.url }}" class="rounded-3 mb-2" style="width: 160px; height: 160px; object-fit: cover; border: 3px solid rgba(255,255,255,0.5);">
@@ -22,7 +23,7 @@
                             {% endif %}
                         </div>
 
-                        <!-- Информация -->
+                        <!-- Информация (9 колонок) -->
                         <div class="col-md-9">
                             <h2>{{ master.first_name }} {{ master.last_name }}</h2>
                             <p class="text-muted">
@@ -43,7 +44,7 @@
                                 </button>
                             </div>
 
-                            <!-- О себе -->
+                            <!-- О себе (сворачиваемый блок) -->
                             <div class="mt-3">
                                 <h6>О себе</h6>
                                 {% if master.about %}
@@ -65,7 +66,7 @@
                 </div>
             </div>
 
-            <!-- Примеры работ (портфолио) -->
+            <!-- Карточка 2: Примеры работ (портфолио) -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-secondary text-white">
                     <h5 class="mb-0"><i class="fas fa-images me-2"></i>Примеры работ</h5>
@@ -99,7 +100,7 @@
                 </div>
             </div>
 
-            <!-- Информация о работе -->
+            <!-- Карточка 3: Информация о работе -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-secondary text-white">
                     <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i>Информация о работе</h5>
@@ -150,7 +151,7 @@
                 </div>
             </div>
 
-            <!-- Услуги с ценами -->
+            <!-- Карточка 4: Услуги с ценами -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0"><i class="fas fa-tools me-2"></i>Услуги и цены</h5>
@@ -200,36 +201,50 @@
                 </div>
             </div>
 
-            <!-- Отзывы -->
+            <!-- Карточка 5: Отзывы -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0"><i class="fas fa-star me-2"></i>Отзывы</h5>
-                    <button class="btn btn-sm btn-outline-light" onclick="alert('Добавление отзыва в разработке')">
+                    {% if user.is_authenticated and user.role == 'user' and not has_review %}
+                    <a href="{% url 'reviews:review_create_for_master' master.pk %}" class="btn btn-sm btn-outline-light">
                         <i class="fas fa-pen me-1"></i>Оставить отзыв
-                    </button>
+                    </a>
+                    {% elif user.is_authenticated and user.role == 'user' and has_review %}
+                    <span class="badge bg-success">Вы уже оставили отзыв</span>
+                    {% endif %}
                 </div>
                 <div class="card-body">
-                    {% for review in reviews %}
-                    <div class="border-bottom pb-3 mb-3">
-                        <div class="d-flex justify-content-between">
-                            <strong>{{ review.author.get_full_name|default:review.author.email }}</strong>
-                            <small class="text-muted">{{ review.created|date:"d.m.Y" }}</small>
+                    {% if reviews %}
+                        {% for review in reviews %}
+                        <div class="border-bottom pb-3 mb-3">
+                            <div class="d-flex justify-content-between">
+                                <strong>{{ review.author.get_full_name|default:review.author.email }}</strong>
+                                <small class="text-muted">{{ review.created|date:"d.m.Y" }}</small>
+                            </div>
+                            <div class="text-warning mb-1">
+                                {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= review.rating %}
+                                        ★
+                                    {% else %}
+                                        ☆
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="text-secondary ms-1">({{ review.rating }}/5)</span>
+                            </div>
+                            <p class="mb-1">{{ review.content }}</p>
                         </div>
-                        <p class="mb-1">{{ review.content }}</p>
-                        <div class="text-warning">
-                            ★★★★★
-                        </div>
-                    </div>
-                    {% empty %}
-                    <p class="text-muted text-center">Пока нет отзывов</p>
-                    {% endfor %}
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center">Пока нет отзывов</p>
+                    {% endif %}
                 </div>
             </div>
-        </div>
+        </div>  <!-- Закрытие левой колонки col-md-8 -->
 
-        <!-- Правая колонка -->
+        <!-- ПРАВАЯ КОЛОНКА (боковая панель) - 4 колонки из 12 -->
         <div class="col-md-4">
-            <!-- Статистика -->
+
+            <!-- Карточка 1: Статистика -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-secondary text-white">
                     <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Статистика</h5>
@@ -257,7 +272,7 @@
                 </div>
             </div>
 
-            <!-- Контактная информация -->
+            <!-- Карточка 2: Контактная информация -->
             <div class="card shadow-sm">
                 <div class="card-header bg-secondary text-white">
                     <h5 class="mb-0"><i class="fas fa-address-card me-2"></i>Контакты</h5>
@@ -272,10 +287,12 @@
                     </button>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
+        </div>  <!-- Закрытие правой колонки col-md-4 -->
 
+    </div>  <!-- Закрытие row -->
+</div>  <!-- Закрытие container -->
+
+<!-- JavaScript для сворачивания/разворачивания текста -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Для блока "О себе"

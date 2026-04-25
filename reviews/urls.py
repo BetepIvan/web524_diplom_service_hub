@@ -1,7 +1,8 @@
 from django.urls import path
 
 from reviews.apps import ReviewsConfig
-from reviews.views import ReviewListView, ReviewDeactivatedListView, ReviewCreateView, ReviewDetailView, ReviewUpdateView, ReviewDeleteView, review_toggle_activity
+from reviews.views import ReviewListView, ReviewDeactivatedListView, ReviewCreateView, ReviewDetailView, \
+    ReviewUpdateView, ReviewDeleteView, review_toggle_activity, ReviewCreateForMasterView
 
 app_name = ReviewsConfig.name
 
@@ -14,4 +15,6 @@ urlpatterns = [
     path('review/update/<slug:slug>/', ReviewUpdateView.as_view(), name='review_update'),
     path('review/delete/<slug:slug>/', ReviewDeleteView.as_view(), name='review_delete'),
     path('review/toggle/<slug:slug>/', review_toggle_activity, name='review_toggle'),
+
+    path('create/<int:master_id>/', ReviewCreateForMasterView.as_view(), name='review_create_for_master'),
 ]

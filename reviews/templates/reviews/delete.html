@@ -9,8 +9,14 @@
                 {% endif %}
             </div>
             <div class="card-body">
-                <p class="card-text">{{ object.title }}</p>
-                <p class="card-text">{{ object.services }}</p>
+                <h5>{{ object.title }}</h5>
+                <div class="text-warning mb-2">
+                    {% for i in "12345"|make_list %}
+                        {% if forloop.counter <= object.rating %}★{% else %}☆{% endif %}
+                    {% endfor %}
+                </div>
+                <p class="card-text">{{ object.content|truncatewords:30 }}</p>
+                <p class="text-muted small">Мастер: {{ object.master_service.master.get_full_name|default:object.master_service.master.email }}</p>
             </div>
             <div class="card-footer">
                 {% csrf_token %}

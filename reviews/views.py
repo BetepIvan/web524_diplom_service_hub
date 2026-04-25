@@ -9,7 +9,7 @@ from reviews.models import Review
 from reviews.forms import ReviewForm
 from reviews.utils import generate_slug
 from users.models import UserRoles
-
+from services.models import MasterService
 
 class ReviewListView(ListView):
     model = Review
@@ -122,3 +122,49 @@ def review_toggle_activity(request, slug):
     review_object.sign_of_review = True
     review_object.save()
     return redirect(reverse('reviews:reviews_list'))
+
+
+class ReviewCreateForMasterView(LoginRequiredMixin, CreateView):
+    model = Review
+    form_class = ReviewForm
+    template_name = 'reviews/create_updata.html'
+    extra_context = {'title': 'Оставить отзыв'}
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.role not in [UserRoles.USER, UserRoles.ADMIN]:
+            raise PermissionDenied
+        # Проверяем, оставлял ли пользователь уже отзыв этому мастеру
+        master_id = self.kwargs.get('master_id')
+        if Review.objects.filter(author=request.user, master_id=master_id).exists():
+            from django.contrib import messages
+            messages.warning(request, 'Вы уже оставляли отзыв этому мастеру')
+            return redirect('users:master_detail', pk=master_id)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_initial(self):
+        initial = super().get_initial()
+        master_id = self.kwargs.get('master_id')
+        if master_id:
+            initial['master'] = master_id
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        master_id = self.kwargs.get('master_id')
+        if master_id:
+            from users.models import User
+            master = get_object_or_404(User, pk=master_id)
+            context['master'] = master
+        return context
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        if self.object.slug == 'temp_slug':
+            self.object.slug = generate_slug()
+        self.object.author = self.request.user
+        self.object.master_id = self.kwargs.get('master_id')
+        self.object.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('users:master_detail', kwargs={'pk': self.kwargs.get('master_id')})

@@ -1,19 +1,67 @@
 {% extends 'services/base.html' %}
 
+{% block extra_head %}
+<style>
+    .rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+        gap: 5px;
+    }
+    .rating input {
+        display: none;
+    }
+    .rating label {
+        font-size: 2rem;
+        color: #ddd;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    .rating input:checked ~ label,
+    .rating label:hover,
+    .rating label:hover ~ label {
+        color: #ffc107;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <form method="post" enctype="multipart/form-data" class="row">
     <div class="col-6">
         <div class="card">
             <div class="card-header">
                 {% if object %}
-                Редактировать
+                Редактировать отзыв
                 {% else %}
                 Добавить отзыв
                 {% endif %}
             </div>
             <div class="card-body">
                 {% csrf_token %}
-                {{ form.as_p }}
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Оценка</label>
+                    <div class="rating">
+                        {% for value, label in form.rating.field.choices|slice:"::-1" %}
+                        <input type="radio" name="rating" value="{{ value }}" id="star{{ value }}" {% if form.rating.value == value|stringformat:"i" %}checked{% endif %}>
+                        <label for="star{{ value }}">★</label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Заголовок</label>
+                    {{ form.title }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Отзыв</label>
+                    {{ form.content }}
+                </div>
+
+                {{ form.master_service }}
+                {{ form.slug }}
+
                 <input type="submit" class="btn btn-outline-success"
                         value="{% if object %}Сохранить{% else %}Добавить{% endif %}">
                 {% if object %}
@@ -30,7 +78,7 @@
                 {% endif %}
             </div>
             <div class="card-footer">
-                <a href="{% url 'reviews:reviews_list' %}" class="btn btn-outline-primary"><< Назад</a>
+                <a href="{% url 'services:services_list' %}" class="btn btn-outline-primary"><< Назад</a>
                 {% if object %}
                 {% if user.role == 'admin' or object.author == user %}
                 <a href="{% url 'reviews:review_delete' object.slug %}" class="btn btn-outline-danger float-end">Удалить</a>

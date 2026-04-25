@@ -1,8 +1,31 @@
 {% extends 'services/base.html' %}
 
 {% block content %}
-<div class="HomeRubricMenu">
-    <div class="container">
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Категории услуг</h1>
+        <div>
+            {% if user.role == 'admin' %}
+            <a href="{% url 'services:category_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i>Создать категорию
+            </a>
+            {% elif user.role == 'master' %}
+            <a href="{% url 'services:category_suggest' %}" class="btn btn-outline-primary">
+                <i class="fas fa-lightbulb me-1"></i>Предложить категорию
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if user.role == 'admin' or user.role == 'moderator' %}
+    <div class="mb-3">
+        <a href="?moderated=False" class="btn btn-sm btn-warning">На модерации</a>
+        <a href="?moderated=True" class="btn btn-sm btn-success">Одобренные</a>
+        <a href="?" class="btn btn-sm btn-secondary">Все</a>
+    </div>
+    {% endif %}
+
+    <div class="HomeRubricMenu">
         <div class="row">
             <div class="col-md-3">
                 <div class="HomeRubricMenu-Menu">
@@ -13,6 +36,9 @@
                     <div class="HomeRubricMenu-MenuItem">
                         <a href="#" data-category="{{ category.id }}" class="category-link {% if selected_category_id == category.id %}active{% endif %}">
                             {{ category.name }}
+                            {% if not category.is_moderated and user.role == 'admin' or user.role == 'moderator' %}
+                            <span class="badge bg-warning text-dark float-end">!</span>
+                            {% endif %}
                         </a>
                     </div>
                     {% endfor %}
@@ -24,12 +50,19 @@
                 <div class="HomeRubricMenu-Content" data-content="{{ category.id }}"
                      style="{% if selected_category_id == category.id %}display: block;{% else %}display: none;{% endif %}">
 
+                    {% if not category.is_moderated and user.role == 'admin' or user.role == 'moderator' %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-clock me-1"></i> Категория ожидает модерации
+                        <a href="{% url 'services:category_moderate' category.pk %}" class="btn btn-sm btn-primary float-end">Модерировать</a>
+                    </div>
+                    {% endif %}
+
                     <div class="HomeRubricMenu-TopSpecializations">
                         <strong>Услуги</strong>
                         {% for service in category.service_set.all|slice:":6" %}
                         <div class="HomeRubricMenu-TopSpecialization">
                             <a class="Link Link_theme_blackText HomeRubricMenu-TopSpecializationLink"
-                               href="{% url 'services:category_services' category.pk %}?service={{ service.id }}">
+                               href="{% url 'users:users_list' %}?service={{ service.id }}">
                                 {{ service.title }}
                             </a>
                             <div class="Text Text_size_s Text_color_greyDark Text_weight_bold">
@@ -43,7 +76,7 @@
                         {% for service in category.service_set.all|slice:"6:" %}
                         <div class="HomeRubricMenu-ContentItem">
                             <a class="Link Link_theme_blackText HomeRubricMenu-ContentItemLink"
-                               href="{% url 'services:category_services' category.pk %}?service={{ service.id }}">
+                               href="{% url 'users:users_list' %}?service={{ service.id }}">
                                 {{ service.title }}
                             </a>
                         </div>
@@ -57,7 +90,64 @@
 </div>
 
 <style>
-/* ... стили как раньше ... */
+.HomeRubricMenu-Menu {
+    list-style: none;
+    padding: 0;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e5e5e5;
+}
+.HomeRubricMenu-MenuItem {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.HomeRubricMenu-MenuItem:last-child {
+    border-bottom: none;
+}
+.HomeRubricMenu-MenuItem.main-category {
+    background: #f8f9fa;
+    border-radius: 8px 8px 0 0;
+}
+.HomeRubricMenu-MenuItem a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+}
+.HomeRubricMenu-MenuItem a.active,
+.HomeRubricMenu-MenuItem a:hover {
+    color: #007bff;
+}
+.badge {
+    background-color: #6c757d;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+.float-end {
+    float: right;
+}
+.HomeRubricMenu-TopSpecializations {
+    margin-bottom: 20px;
+}
+.HomeRubricMenu-TopSpecialization {
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+.HomeRubricMenu-TopSpecializationLink {
+    font-size: 14px;
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 500;
+}
+.HomeRubricMenu-TopSpecializationLink:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+.Text_color_greyDark {
+    color: #999;
+    font-size: 12px;
+}
 </style>
 
 <script>
@@ -65,7 +155,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const categoryLinks = document.querySelectorAll('.category-link');
     const contents = document.querySelectorAll('.HomeRubricMenu-Content');
 
-    // Если есть выбранная категория, показываем её
     const activeCategory = document.querySelector('.category-link.active');
     if (activeCategory) {
         const categoryId = activeCategory.dataset.category;
@@ -80,24 +169,20 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const categoryId = this.dataset.category;
 
-            // Скрыть все контенты
             contents.forEach(content => {
                 content.style.display = 'none';
             });
 
-            // Показать выбранный
             const selectedContent = document.querySelector(`.HomeRubricMenu-Content[data-content="${categoryId}"]`);
             if (selectedContent) {
                 selectedContent.style.display = 'block';
             }
 
-            // Обновить активный класс
             categoryLinks.forEach(link => {
                 link.classList.remove('active');
             });
             this.classList.add('active');
 
-            // Обновить URL без перезагрузки
             const url = new URL(window.location.href);
             url.searchParams.set('category', categoryId);
             window.history.pushState({}, '', url);

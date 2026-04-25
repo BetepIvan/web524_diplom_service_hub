@@ -113,17 +113,49 @@ class UserListView(LoginRequiredMixin, ListView):
         user = self.request.user
         queryset = User.objects.filter(is_active=True)
 
-        # Мастера и клиенты видят только мастеров
-        if user.role in ['master', 'user']:
-            queryset = queryset.filter(role='master')
+        # Поиск
+        search = self.request.GET.get('search')
+        if search:
+            queryset = queryset.filter(
+                Q(first_name__icontains=search) |
+                Q(last_name__icontains=search) |
+                Q(email__icontains=search)
+            )
+
+        # Фильтр по роли
+        role = self.request.GET.get('role')
+        if role:
+            queryset = queryset.filter(role=role)
+
+        # Фильтр по услуге
+        service_id = self.request.GET.get('service')
+        if service_id:
+            from services.models import MasterService
+            masters_ids = MasterService.objects.filter(
+                service_template_id=service_id,
+                is_active=True
+            ).values_list('master_id', flat=True)
+            queryset = queryset.filter(id__in=masters_ids)
+        else:
+            # Если нет фильтра услуги, мастера и клиенты видят только мастеров
+            if user.role in ['master', 'user']:
+                queryset = queryset.filter(role='master')
 
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
+        service_id = self.request.GET.get('service')
 
-        if user.role in ['master', 'user']:
+        if service_id:
+            from services.models import Service
+            from django.shortcuts import get_object_or_404
+            service = get_object_or_404(Service, pk=service_id)
+            context['title'] = f'Мастера - {service.title}'
+            context['description'] = f'Специалисты, оказывающие услугу "{service.title}"'
+            context['current_service_id'] = service_id
+        elif user.role in ['master', 'user']:
             context['title'] = 'Мастера'
             context['description'] = 'Выберите мастера для вашей задачи'
         else:
@@ -167,8 +199,14 @@ class MasterDetailView(DetailView):
             context['services'] = MasterService.objects.filter(master=master, is_active=True).select_related(
                 'service_template', 'service_template__category')
 
-        # Получаем отзывы на услуги мастера (через master_service)
-        context['reviews'] = Review.objects.filter(master_service__master=master, sign_of_review=True)[:10]
+        # Получаем отзывы на мастера
+        context['reviews'] = Review.objects.filter(master=master, sign_of_review=True).select_related('author')
+
+        # Проверял ли текущий пользователь уже отзыв этому мастеру
+        if self.request.user.is_authenticated:
+            context['has_review'] = Review.objects.filter(author=self.request.user, master=master).exists()
+        else:
+            context['has_review'] = False
 
         context['title'] = f'Мастер: {master.get_full_name()}'
         context['hide_jumbotron'] = True

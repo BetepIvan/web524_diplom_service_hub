@@ -1,32 +1,38 @@
 {% extends 'services/base.html' %}
-{% load my_tags %}
+{% load services_tags %}
 {% block content %}
 <div class="row">
     <div class="col-md-12">
         <div class="card mb-12 box-shadow">
             <div class="card-header">
-                <p class="card-text">
-                    Отзыв: {{ object.services }}
-                </p>
+                <h4>{{ object.title }}</h4>
+                <div class="text-warning">
+                    {% for i in "12345"|make_list %}
+                        {% if forloop.counter <= object.rating %}
+                            ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
+                    <span class="text-secondary ms-2">({{ object.rating }}/5)</span>
+                </div>
             </div>
-            <img class="card-img-top"
-                src="{{ object.services.photo|services_media }}" width="300" height="600"
-                alt="Card image cap">
             <div class="card-body">
-                <p class="card-text">
-                    {{ object.content }}
+                <p class="card-text">{{ object.content }}</p>
+                <p class="text-muted">
+                    <strong>Мастер:</strong> {{ object.master.get_full_name|default:object.master.email }}<br>
+                    <strong>Автор:</strong> {{ object.author.get_full_name|default:object.author.email|default:"Удаленный пользователь" }}<br>
+                    <strong>Дата:</strong> {{ object.created|date:"d.m.Y H:i" }}
                 </p>
-                <samp class="text-muted">Дата создания: {{ object.created }}</samp><br>
-                <samp class="text-muted">Автор: {{ object.author|default:"Удаленный пользователь" }}</samp><br>
             </div>
             <div class="card-footer">
                 <a href="{% url 'reviews:reviews_list' %}" class="btn btn-outline-primary"><< Назад</a>
+                {% if object.author == user or user.role == 'admin' %}
+                <a href="{% url 'reviews:review_update' object.slug %}" class="btn btn-outline-warning">Редактировать</a>
+                <a href="{% url 'reviews:review_delete' object.slug %}" class="btn btn-outline-danger">Удалить</a>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %}
-
-
-

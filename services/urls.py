@@ -25,6 +25,7 @@ urlpatterns = [
     path('categories/<int:pk>/services/', cache_page(60)(ServicesByCategoryListView.as_view()), name='category_services'),
     path('categories/search/', CategorySearchListView.as_view(), name='categories_search'),
     path('categories/<int:pk>/moderate/', CategoryModerateView.as_view(), name='category_moderate'),
+    path('categories/suggest/', CategorySuggestView.as_view(), name='category_suggest'),
 
     path('all_search/', AllSearchView.as_view(), name='all_search'),
 

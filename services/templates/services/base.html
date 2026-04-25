@@ -118,21 +118,31 @@
                                 <li><a class="dropdown-item" href="{% url 'users:user_change_password' %}">
                                     <i class="fas fa-key me-2"></i>Сменить пароль
                                 </a></li>
+
                                 {% if user.role == 'master' %}
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{% url 'services:service_create' %}">
+                                <li><a class="dropdown-item" href="{% url 'services:service_library' %}">
                                     <i class="fas fa-plus-circle me-2"></i>Добавить услугу
                                 </a></li>
-                                <li><a class="dropdown-item" href="{% url 'services:index' %}">
+                                <li><a class="dropdown-item" href="{% url 'services:my_services' %}">
                                     <i class="fas fa-list me-2"></i>Мои услуги
                                 </a></li>
                                 {% endif %}
+
+                                {% if user.role == 'admin' or user.role == 'moderator' %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'reviews:reviews_list' %}">
+                                    <i class="fas fa-star me-2"></i>Отзывы
+                                </a></li>
+                                {% endif %}
+
                                 {% if user.role == 'admin' %}
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="/admin/">
                                     <i class="fas fa-shield-alt me-2"></i>Админ-панель
                                 </a></li>
                                 {% endif %}
+
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="post" action="{% url 'users:user_logout' %}">
