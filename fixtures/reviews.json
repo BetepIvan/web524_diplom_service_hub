@@ -1,0 +1,86 @@
+﻿[
+{
+  "model": "reviews.review",
+  "pk": 1,
+  "fields": {
+    "title": "╨Ъ╨╗╨░╤Б╤Б",
+    "slug": "9bXKygYgsPQbZMARPcZ1",
+    "content": "╨е╨╛╤А╨╛╤И╨╕╨╣ ╨╝╨░╤Б╤В╨╡╤А",
+    "rating": 4,
+    "created": "2026-04-25T06:42:27.864Z",
+    "sign_of_review": true,
+    "author": 6,
+    "master": 3
+  }
+},
+{
+  "model": "reviews.review",
+  "pk": 2,
+  "fields": {
+    "title": "╨Ъ╤А╤Г╤В╨╛",
+    "slug": "BRVzZH5STyjxVUpZuscG",
+    "content": "╨Ч╨╜╨░╨╡╤И╤М ╤З╤В╨╛ ╨┤╨╡╨╗╨░╤В╤М",
+    "rating": 4,
+    "created": "2026-04-25T06:44:00.873Z",
+    "sign_of_review": true,
+    "author": 4,
+    "master": 3
+  }
+},
+{
+  "model": "reviews.review",
+  "pk": 3,
+  "fields": {
+    "title": "╨Я╨╗╨╛╤Е╨╛╨╣ ╨╝╨░╤Б╤В╨╡╤А",
+    "slug": "U5AhkiNYr4yIGzKfIxKW",
+    "content": "╨Ю╤Б╤В╨░╨▓╨╗╤П╨╡╤В ╨│╤А╤П╨╖ ╨┐╨╛╤Б╨╗╨╡ ╤Б╨╡╨▒╨╡ ╨╕ ╨┤╨╛╨╗╨│╨╛ ╨┤╨╡╨╗╨░╨╡╤В",
+    "rating": 1,
+    "created": "2026-04-25T08:52:41.718Z",
+    "sign_of_review": true,
+    "author": 8,
+    "master": 5
+  }
+},
+{
+  "model": "reviews.review",
+  "pk": 4,
+  "fields": {
+    "title": "╨Ъ╤А╤Г╤В╨╛",
+    "slug": "41WeKt8GPOcRlnhdw1wv",
+    "content": "╨Ю╤З╨╡╨╜╤М ╨╛╤В╨▓╨╡╤В╤Б╤В╨▓╨╡╨╜╨╜╤Л╨╣ ! ╨а╨░╨▒╨╛╤В╤Г ╨▓╤Л╨┐╨╛╨╗╨╜╨╕╨╗ ╨╖╨░╨╝╨╡╤З╨░╤В╨╡╨╗╤М╨╜╨╛! ╨ж╨╡╨╜╨░ ╨▓╨┐╨╛╨╗╨╜╨╡ ╤Г╤Б╤В╤А╨░╨╕╨▓╨░╨╡╤В !╨а╨╡╨║╨╛╨╝╨╡╨╜╨┤╤Г╤О!",
+    "rating": 4,
+    "created": "2026-04-25T12:44:49.451Z",
+    "sign_of_review": true,
+    "author": 11,
+    "master": 9
+  }
+},
+{
+  "model": "reviews.review",
+  "pk": 5,
+  "fields": {
+    "title": "╨е╨╛╤А╨╛╤И╨╛",
+    "slug": "n0cvxix1pIU4v6J49Hl3",
+    "content": "╨Ю╨│╤А╨╛╨╝╨╜╨░╤П ╨▒╨╗╨░╨│╨╛╨┤╨░╤А╨╜╨╛╤Б╤В╤М. ╨а╨╡╨╝╨╛╨╜╤В ╤И╨▓╨╡╨╣╨╜╨╛╨╣ ╨╝╨░╤И╨╕╨╜╨║╨╕-╨║╨░╤З╨╡╤Б╤В╨▓╨╡╨╜╨╜╨╛ ╨╕ ╨▒╤Л╤Б╤В╤А╨╛.",
+    "rating": 3,
+    "created": "2026-04-25T12:45:36.198Z",
+    "sign_of_review": true,
+    "author": 11,
+    "master": 10
+  }
+},
+{
+  "model": "reviews.review",
+  "pk": 6,
+  "fields": {
+    "title": "ЁЯТп",
+    "slug": "eUFxoxDuzpT08RhbLWQe",
+    "content": "╨Ш╨▓╨░╨╜ ╨Ь╨░╤Б╤В╨╡╤А ╤Б ╨▒╨╛╨╗╤М╤И╨╛╨╣ ╨▒╤Г╨║╨▓╤Л ╨╖╨╛╨╗╨╛╤В╤Л╨╡ ╤А╤Г╨║╨╕ ЁЯТп╨┐╨╛╨╝╨╛╨│ ╤Б ╤Б╨╕╨│╨╜╨░╨╗╨╕╨╖╨░╤Ж╨╕╨╡╨╣ ╨╜╨░ ╨░╨▓╤В╨╛ ╨░ ╨┐╨╛╨┐╤Г╤В╨╜╨╛ ╨╡╤Й╨╡ ╨╕ ╨┤╨▓╨╡╤А╤М ╤Б╨┤╨╡╨╗╨░╨╗ ╨║╨╛╤В╨╛╤А╨░╤П ╨╜╨╡ ╨╖╨░╨║╤А╤Л╨▓╨░╨╗╨░╤Б╤М ╨╛╤З╨╡╨╜╤М ╨┤╨╛╨▓╨╛╨╗╨╡╨╜ ╤А╨╡╨╖╤Г╨╗╤М╤В╨░╤В╨╛╨╝ ╤А╨░╨▒╨╛╤В╤Л ЁЯТп",
+    "rating": 5,
+    "created": "2026-04-25T12:46:16.369Z",
+    "sign_of_review": true,
+    "author": 11,
+    "master": 11
+  }
+}
+]

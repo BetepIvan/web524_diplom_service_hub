@@ -1,0 +1,474 @@
+﻿[
+{
+  "model": "services.category",
+  "pk": 1,
+  "fields": {
+    "name": "╨н╨╗╨╡╨║╤В╤А╨╕╨║╨░",
+    "description": null,
+    "icon": "fas fa-image",
+    "image": "categories/electric_z5wunpM.png",
+    "is_active": true,
+    "is_moderated": true,
+    "is_main": true,
+    "created_by": 1,
+    "created_at": "2026-04-25T05:28:24.784Z"
+  }
+},
+{
+  "model": "services.category",
+  "pk": 2,
+  "fields": {
+    "name": "╨Ъ╨╗╨╕╨╜╨╕╨╜╨│",
+    "description": null,
+    "icon": "fas fa-image",
+    "image": "",
+    "is_active": true,
+    "is_moderated": true,
+    "is_main": false,
+    "created_by": 3,
+    "created_at": "2026-04-25T05:40:54.241Z"
+  }
+},
+{
+  "model": "services.category",
+  "pk": 3,
+  "fields": {
+    "name": "╨б╨░╨╜╤В╨╡╤Е╨╜╨╕╨║╨░",
+    "description": null,
+    "icon": "fas fa-image",
+    "image": "categories/santekhn_k2mcvlD.png",
+    "is_active": true,
+    "is_moderated": true,
+    "is_main": true,
+    "created_by": null,
+    "created_at": "2026-04-25T05:42:43.755Z"
+  }
+},
+{
+  "model": "services.category",
+  "pk": 4,
+  "fields": {
+    "name": "╨Ъ╨╛╨╝╨┐╤М╤О╤В╨╡╤А╤Л",
+    "description": null,
+    "icon": "fas fa-image",
+    "image": "categories/pkit_sTF9dHe.png",
+    "is_active": true,
+    "is_moderated": true,
+    "is_main": true,
+    "created_by": 1,
+    "created_at": "2026-04-25T05:44:02.807Z"
+  }
+},
+{
+  "model": "services.category",
+  "pk": 5,
+  "fields": {
+    "name": "╨С╤М╤О╤В╨╕-╤Б╤Д╨╡╤А╨░",
+    "description": null,
+    "icon": "fas fa-image",
+    "image": "categories/manicur_fYsJDAr.png",
+    "is_active": true,
+    "is_moderated": true,
+    "is_main": true,
+    "created_by": 1,
+    "created_at": "2026-04-25T05:45:48.176Z"
+  }
+},
+{
+  "model": "services.category",
+  "pk": 6,
+  "fields": {
+    "name": "╨Ь╤Г╨╢ ╨╜╨░ ╤З╨░╤Б",
+    "description": null,
+    "icon": "fas fa-image",
+    "image": "",
+    "is_active": true,
+    "is_moderated": true,
+    "is_main": false,
+    "created_by": 11,
+    "created_at": "2026-04-25T12:29:00.650Z"
+  }
+},
+{
+  "model": "services.service",
+  "pk": 1,
+  "fields": {
+    "title": "╨г╤Б╤В╨░╨╜╨╛╨▓╨║╨░ ╤А╨╛╨╖╨╡╤В╨║╨╕",
+    "category": 1,
+    "description": "╨г╤Б╤В╨░╨╜╨╛╨▓╨║╨░ ╤А╨╛╨╖╨╡╤В╨║╨╕",
+    "is_template": true,
+    "created_by": 3,
+    "created_at": "2026-04-25T05:38:37.649Z"
+  }
+},
+{
+  "model": "services.service",
+  "pk": 2,
+  "fields": {
+    "title": "╨Ь╨░╨╜╨╕╨║╤О╤А",
+    "category": 5,
+    "description": "",
+    "is_template": true,
+    "created_by": 3,
+    "created_at": "2026-04-25T07:15:16.977Z"
+  }
+},
+{
+  "model": "services.service",
+  "pk": 3,
+  "fields": {
+    "title": "╨Ь╨╛╨╜╤В╨░╨╢ ╨╗╤О╤Б╤В╤А╤Л",
+    "category": 1,
+    "description": "",
+    "is_template": true,
+    "created_by": 9,
+    "created_at": "2026-04-25T11:38:31.688Z"
+  }
+},
+{
+  "model": "services.service",
+  "pk": 4,
+  "fields": {
+    "title": "╨а╨╡╨╝╨╛╨╜╤В ╤Н╨╗╨╡╨║╤В╤А╨╛╨┐╤А╨╕╨▒╨╛╤А╨╛╨▓",
+    "category": 1,
+    "description": "",
+    "is_template": true,
+    "created_by": 9,
+    "created_at": "2026-04-25T11:39:46.742Z"
+  }
+},
+{
+  "model": "services.service",
+  "pk": 5,
+  "fields": {
+    "title": "╨Э╨░╤А╨░╤Й╨╕╨▓╨░╨╜╨╕╨╡ ╨╜╨╛╨│╤В╨╡╨╣",
+    "category": 5,
+    "description": "╨Я╤А╨╛╤Ж╨╡╨┤╤Г╤А╨░ ╨╕╤Б╨║╤Г╤Б╤Б╤В╨▓╨╡╨╜╨╜╨╛╨│╨╛ ╤Г╨▓╨╡╨╗╨╕╤З╨╡╨╜╨╕╤П ╨┤╨╗╨╕╨╜╤Л",
+    "is_template": true,
+    "created_by": 10,
+    "created_at": "2026-04-25T12:20:17.582Z"
+  }
+},
+{
+  "model": "services.service",
+  "pk": 6,
+  "fields": {
+    "title": "╨Я╤А╨╛╤З╨╕╤Б╤В╨║╨░ ╨║╨░╨╜╨░╨╗╨╕╨╖╨░╤Ж╨╕╨╕",
+    "category": 3,
+    "description": "",
+    "is_template": true,
+    "created_by": 11,
+    "created_at": "2026-04-25T12:27:44.360Z"
+  }
+},
+{
+  "model": "services.service",
+  "pk": 7,
+  "fields": {
+    "title": "╨Ь╨╛╨╜╤В╨░╨╢ ╤Г╨╜╨╕╤В╨░╨╖╨░",
+    "category": 3,
+    "description": "",
+    "is_template": true,
+    "created_by": 11,
+    "created_at": "2026-04-25T12:28:10.146Z"
+  }
+},
+{
+  "model": "services.service",
+  "pk": 8,
+  "fields": {
+    "title": "╨Ч╨░╨╝╨╡╨╜╨░ ╤Г╨╜╨╕╤В╨░╨╖╨░",
+    "category": 3,
+    "description": "",
+    "is_template": true,
+    "created_by": 11,
+    "created_at": "2026-04-25T12:28:33.609Z"
+  }
+},
+{
+  "model": "services.service",
+  "pk": 9,
+  "fields": {
+    "title": "╨Ь╨░╤Б╤В╨╡╤А ╨╜╨░ ╨▓╤Б╨╡ ╤А╤Г╨║╨╕",
+    "category": 6,
+    "description": "",
+    "is_template": true,
+    "created_by": 11,
+    "created_at": "2026-04-25T12:32:13.356Z"
+  }
+},
+{
+  "model": "services.service",
+  "pk": 10,
+  "fields": {
+    "title": "╨б╨▒╨╛╤А╨║╨░ ╨╝╨╡╨▒╨╡╨╗╨╕",
+    "category": 6,
+    "description": "",
+    "is_template": true,
+    "created_by": 11,
+    "created_at": "2026-04-25T12:32:43.469Z"
+  }
+},
+{
+  "model": "services.service",
+  "pk": 11,
+  "fields": {
+    "title": "╨Т╤Л╨╜╨╛╤Б ╨╝╨╛╤Б╨╛╤А╨░",
+    "category": 2,
+    "description": "",
+    "is_template": true,
+    "created_by": 11,
+    "created_at": "2026-04-25T12:33:17.912Z"
+  }
+},
+{
+  "model": "services.masterservice",
+  "pk": 2,
+  "fields": {
+    "master": 5,
+    "service_template": 1,
+    "price": "300.00",
+    "is_active": true,
+    "created_at": "2026-04-25T06:15:52.519Z"
+  }
+},
+{
+  "model": "services.masterservice",
+  "pk": 11,
+  "fields": {
+    "master": 3,
+    "service_template": 2,
+    "price": null,
+    "is_active": true,
+    "created_at": "2026-04-25T08:43:30.883Z"
+  }
+},
+{
+  "model": "services.masterservice",
+  "pk": 12,
+  "fields": {
+    "master": 3,
+    "service_template": 1,
+    "price": null,
+    "is_active": false,
+    "created_at": "2026-04-25T08:43:37.008Z"
+  }
+},
+{
+  "model": "services.masterservice",
+  "pk": 13,
+  "fields": {
+    "master": 9,
+    "service_template": 1,
+    "price": "150.00",
+    "is_active": true,
+    "created_at": "2026-04-25T11:38:09.856Z"
+  }
+},
+{
+  "model": "services.masterservice",
+  "pk": 14,
+  "fields": {
+    "master": 9,
+    "service_template": 3,
+    "price": "1500.00",
+    "is_active": true,
+    "created_at": "2026-04-25T11:38:41.008Z"
+  }
+},
+{
+  "model": "services.masterservice",
+  "pk": 15,
+  "fields": {
+    "master": 9,
+    "service_template": 4,
+    "price": "1000.00",
+    "is_active": true,
+    "created_at": "2026-04-25T11:39:57.116Z"
+  }
+},
+{
+  "model": "services.masterservice",
+  "pk": 16,
+  "fields": {
+    "master": 10,
+    "service_template": 2,
+    "price": "1500.00",
+    "is_active": true,
+    "created_at": "2026-04-25T12:19:08.077Z"
+  }
+},
+{
+  "model": "services.masterservice",
+  "pk": 17,
+  "fields": {
+    "master": 10,
+    "service_template": 5,
+    "price": "2500.00",
+    "is_active": true,
+    "created_at": "2026-04-25T12:20:24.825Z"
+  }
+},
+{
+  "model": "services.masterservice",
+  "pk": 18,
+  "fields": {
+    "master": 11,
+    "service_template": 6,
+    "price": null,
+    "is_active": true,
+    "created_at": "2026-04-25T12:27:47.477Z"
+  }
+},
+{
+  "model": "services.masterservice",
+  "pk": 19,
+  "fields": {
+    "master": 11,
+    "service_template": 7,
+    "price": null,
+    "is_active": true,
+    "created_at": "2026-04-25T12:28:14.513Z"
+  }
+},
+{
+  "model": "services.masterservice",
+  "pk": 20,
+  "fields": {
+    "master": 11,
+    "service_template": 8,
+    "price": null,
+    "is_active": true,
+    "created_at": "2026-04-25T12:28:36.179Z"
+  }
+},
+{
+  "model": "services.masterservice",
+  "pk": 21,
+  "fields": {
+    "master": 11,
+    "service_template": 9,
+    "price": null,
+    "is_active": true,
+    "created_at": "2026-04-25T12:32:49.432Z"
+  }
+},
+{
+  "model": "services.masterservice",
+  "pk": 22,
+  "fields": {
+    "master": 11,
+    "service_template": 10,
+    "price": null,
+    "is_active": true,
+    "created_at": "2026-04-25T12:32:59.132Z"
+  }
+},
+{
+  "model": "services.masterservice",
+  "pk": 23,
+  "fields": {
+    "master": 11,
+    "service_template": 11,
+    "price": null,
+    "is_active": true,
+    "created_at": "2026-04-25T12:33:20.961Z"
+  }
+},
+{
+  "model": "services.portfolio",
+  "pk": 1,
+  "fields": {
+    "master": 3,
+    "title": "╨Ь╨░╨╜╨╕╨║╤О╤А",
+    "description": "╨Ь╨░╨╜╨╕╨║╤О╤А ╨╗╤О╨▒╨╛╨╣ ╤Б╨╗╨╛╨╢╨╜╨╛╤Б╤В╨╕",
+    "image": "portfolio/belyj-manikyur-ombre-s-zolotoj-folgoj-na-ovalnyh-nogtyah_NvjWwG2.jpg.webp",
+    "price": "1500.00",
+    "created_at": "2026-04-25T07:13:55.354Z"
+  }
+},
+{
+  "model": "services.portfolio",
+  "pk": 2,
+  "fields": {
+    "master": 3,
+    "title": "╨н╨╗╨╡╨║╤В╤А╨╕╨║╨░",
+    "description": "╨н╨╗╨╡╨║╤В╤А╨╕╨║╨░ ╨╗╤О╨▒╨╛╨╣ ╤Б╨╗╨╛╨╢╨╜╨╛╤Б╤В╨╕",
+    "image": "portfolio/DSC_6705-2-600x400_P8U4ZFq.jpg",
+    "price": "10000.00",
+    "created_at": "2026-04-25T07:14:39.605Z"
+  }
+},
+{
+  "model": "services.portfolio",
+  "pk": 3,
+  "fields": {
+    "master": 9,
+    "title": "╨Ь╨╛╨╜╤В╨░╨╢ ╤А╨╡╤В╤А╨╛ ╨┐╤А╨╛╨▓╨╛╨┤╨║╨╕",
+    "description": "╨Ь╨╛╨╜╤В╨░╨╢ ╨▒╨░╨╜╤М, ╨┤╨╛╨╝╨╛╨▓ ╨┐╨╛╨┤ ╤А╨╡╤В╤А╨╛ ╨┐╤А╨╛╨▓╨╛╨┤╨║╤Г",
+    "image": "portfolio/med.webp",
+    "price": "30000.00",
+    "created_at": "2026-04-25T10:38:06.715Z"
+  }
+},
+{
+  "model": "services.portfolio",
+  "pk": 4,
+  "fields": {
+    "master": 9,
+    "title": "╨Ь╨╛╨╜╤В╨░╨╢ ╨╗╤О╤Б╤В╤А╤Л",
+    "description": "╨Э╤Г╨╢╨╜╨╛ ╨▒╤Л╨╗╨╛ ╨┤╨╡╨╝╨╛╨╜╤В╨╕╤А╨╛╨▓╨░╤В╤М ╤Б╤В╨░╤А╤Г╤О ╨╕ ╨┐╨╛╨╝╨╡╤И╨░╤В╤М ╨╜╨╛╨▓╤Г╤О ╨╗╤О╤Б╤В╤А╤Г.",
+    "image": "portfolio/med_1.webp",
+    "price": "1500.00",
+    "created_at": "2026-04-25T10:40:08.520Z"
+  }
+},
+{
+  "model": "services.portfolio",
+  "pk": 5,
+  "fields": {
+    "master": 10,
+    "title": "╨Ь╨░╨╜╨╕╨║╤О╤А ╤Б ╨┐╨╛╨║╤А╤Л╤В╨╕╨╡╨╝ ╨╜╨╛╨│╤В╨╡╨╣ ╨│╨╡╨╗╤М-╨╗╨░╨║╨╛╨╝",
+    "description": "",
+    "image": "portfolio/128x128.webp",
+    "price": "1500.00",
+    "created_at": "2026-04-25T12:17:51.626Z"
+  }
+},
+{
+  "model": "services.portfolio",
+  "pk": 6,
+  "fields": {
+    "master": 10,
+    "title": "╨Э╨░╤А╨░╤Й╨╕╨▓╨░╨╜╨╕╨╡ ╨╜╨╛╨│╤В╨╡╨╣ ╨│╨╡╨╗╨╡╨╝",
+    "description": "╨Ь╨╛╨┤╨╡╨╗╨╕╤А╨╛╨▓╨░╨╜╨╕╨╡ ╨╜╨╛╨│╤В╨╡╨╣ ,╨░╤А╨╛╤З╨╜╨╛╨╡ ╨╝╨╛╨┤╨╡╨╗╨╕╤А╨╛╨▓╨░╨╜╨╕╨╡. ╨д╤А╨╡╨╜╤З. ╨Р╤А╤В ╤Д╤А╨╡╨╜╤З. ╨Ш ╨╝╨╜╨╛╨│╨╛╨╡ ╨┤╤А╤Г╨│╨╛╨╡.",
+    "image": "portfolio/128x128_1.webp",
+    "price": "2500.00",
+    "created_at": "2026-04-25T12:18:44.318Z"
+  }
+},
+{
+  "model": "services.portfolio",
+  "pk": 7,
+  "fields": {
+    "master": 11,
+    "title": "╨Ч╨░╨╝╨╡╨╜╨░ ╨┐╨╛╨╗╨╕╨┐╤А╨╛╨┐╨╕╨╗╨╡╨╜╨░",
+    "description": "╨Я╨╛╨▒╨╡╨╢╨░╨╗╨╛ ╤Б╨╛╨╡╨┤╨╕╨╜╨╡╨╜╨╕╨╡ ╨▓ ╤В╤А╨╛╨╣╨╜╨╕╨║╨╡. ╨Ф╨╕╨░╨╝╨╡╤В╤А ╤В╤А╤Г╨▒╤Л ╨╜╨░ 16. ╨Ч╨░╨║╨░╨╖╨░╨╗ ╨╝╨░╤В╨╡╤А╨╕╨░╨╗ ╨╕ ╨┐╨╡╤А╨╡╨▓╤С╨╗ ╨╜╨░ ╨┐╨┐ 20 ╨┤╨╕╨░╨╝╨╡╤В╤А╨░. ╨Ч╨░╨║╨░╨╖╤З╨╕╨║ ╤Б╨╛╨│╨╗╨░╤Б╨╕╨╗╤Б╤П ╨┐╨╛╨┤╨╛╨╢╨┤╨░╤В╤М. ╨Т ╤В╨╡╤З╨╡╨╜╨╕╨╕ ╨╝╨╡╤Б╤П╤Ж╨░ ╨▓╨╛╨┐╤А╨╛╤Б ╨▒╤Л╨╗ ╤А╨╡╤И╨╡╨╜.",
+    "image": "portfolio/med_2.webp",
+    "price": "5000.00",
+    "created_at": "2026-04-25T12:34:52.764Z"
+  }
+},
+{
+  "model": "services.portfolio",
+  "pk": 8,
+  "fields": {
+    "master": 11,
+    "title": "╨Я╨╗╨╛╤В╨╜╨╕╤Ж╨║╨╕╨╡ ╤А╨░╨▒╨╛╤В╤Л",
+    "description": "╨б╨╜╤П╨╗ ╤А╨░╨╖╨╝╨╡╤А╤Л. ╨Я╤А╨╕╨╛╨▒╤А╤С╨╗ ╨╝╨░╤В╨╡╤А╨╕╨░╨╗. ╨Ш╨╖╨│╨╛╤В╨╛╨▓╨╕╨╗ 2 ╨╗╨╡╤Б╤В╨╜╨╕╤З╨╜╤Л╨╡ ╤Б╤В╤Г╨┐╨╡╨╜╤М╨║╨╕ ╨╕ ╨╝╨╛╤Б╤В╨╕╨║. ╨Я╤А╨╕╨▓╤С╨╖ ╨╜╨░ ╨╛╨▒╤К╨╡╨║╤В ╨╕ ╨┐╤А╨╛╨╕╨╖╨▓╤С╨╗ ╨╝╨╛╨╜╤В╨░╨╢.",
+    "image": "portfolio/med_3.webp",
+    "price": "10000.00",
+    "created_at": "2026-04-25T12:36:04.510Z"
+  }
+}
+]
