@@ -1,56 +1,6 @@
 from django import forms
-from services.models import Service, ServiceImage, Category, Portfolio, MasterService
+from services.models import Service, Category, Portfolio, MasterService
 from users.forms import StyleFormMixin
-
-
-class ServiceForm(StyleFormMixin, forms.ModelForm):
-    class Meta:
-        model = Service
-        fields = ('category', 'title', 'description')  # Убрал price и location
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['description'].required = False
-
-
-class ServiceCreateForm(StyleFormMixin, forms.ModelForm):
-    use_template = forms.BooleanField(required=False, label='Выбрать из готовых услуг')
-    template_service = forms.ModelChoiceField(
-        queryset=Service.objects.filter(is_template=True),
-        required=False,
-        label='Готовая услуга',
-        widget=forms.Select(attrs={'class': 'form-control'})
-    )
-
-    class Meta:
-        model = Service
-        fields = ('category', 'title', 'description')  # Убрал price, location
-        widgets = {
-            'description': forms.Textarea(attrs={'rows': 4}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        master = kwargs.pop('master', None)
-        super().__init__(*args, **kwargs)
-        if master:
-            self.fields['category'].queryset = master.categories.all()
-            self.fields['template_service'].queryset = Service.objects.filter(
-                is_template=True,
-                category__in=master.categories.all()
-            )
-        self.fields['description'].required = False
-
-    def clean(self):
-        cleaned_data = super().clean()
-        use_template = cleaned_data.get('use_template')
-        template_service = cleaned_data.get('template_service')
-
-        if use_template and template_service:
-            cleaned_data['title'] = template_service.title
-            cleaned_data['description'] = template_service.description
-            cleaned_data['category'] = template_service.category
-
-        return cleaned_data
 
 
 class ServiceTemplateForm(StyleFormMixin, forms.ModelForm):
@@ -68,18 +18,6 @@ class ServiceTemplateForm(StyleFormMixin, forms.ModelForm):
             # Показываем только категории мастера
             self.fields['category'].queryset = master.categories.all()
         self.fields['description'].required = False
-
-
-class ServiceAdminForm(ServiceForm):
-    class Meta:
-        model = Service
-        fields = ('category', 'title', 'description', 'is_template')
-
-
-class ServiceImageForm(StyleFormMixin, forms.ModelForm):
-    class Meta:
-        model = ServiceImage
-        fields = '__all__'
 
 
 class CategoryForm(StyleFormMixin, forms.ModelForm):

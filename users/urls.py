@@ -3,7 +3,7 @@ from django.urls import path
 from users.apps import UsersConfig
 from users.views import (
     UserRegisterView, UserLoginView, UserProfileView, UserLogoutView,
-    UserUpdateView, UserPasswordChangeView, user_generate_new_password_view,
+    UserPasswordChangeView, user_generate_new_password_view,
     UserListView, UserDetailView, BecomeMasterView, MasterProfileCompleteView, MasterDetailView, ProfileManageView
 )
 
@@ -15,7 +15,6 @@ urlpatterns = [
     path('logout/', UserLogoutView.as_view(), name='user_logout'),
     path('register/', UserRegisterView.as_view(), name='user_register'),
     path('profile/', UserProfileView.as_view(), name='user_profile'),
-    path('update/', UserUpdateView.as_view(), name='user_update'),
     path('change_password/', UserPasswordChangeView.as_view(), name='user_change_password'),
     path('profile/change_password/', user_generate_new_password_view, name='user_generate_password'),
     path('profile/manage/', ProfileManageView.as_view(), name='profile_manage'),

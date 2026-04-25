@@ -53,18 +53,6 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
         self.object.save()
         return super().form_valid(form)
 
-    # def form_valid(self, form):
-    #     if self.request.user.role not in [UserRoles.USER, UserRoles.ADMIN]:
-    #         return HttpResponseForbidden
-    #     review_object = form.save()
-    #     print(review_object.slug)
-    #     if review_object.slug == 'temp_slug':
-    #         review_object.slug = generate_slug()
-    #         print(review_object.slug)
-    #     review_object.author = self.request.user
-    #     review_object.save()
-    #     return super().form_valid(form)
-
 
 class ReviewDetailView(DetailView):
     model = Review

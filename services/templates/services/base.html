@@ -89,14 +89,6 @@
                             <i class="fas fa-user-graduate me-1"></i>Стать мастером
                         </a>
                     {% endif %}
-
-<!--                    {% if user.is_authenticated %}-->
-<!--                        {% if user.role == 'master' %}-->
-<!--                            <a href="{% url 'services:index' %}" class="btn btn-outline-info btn-sm">-->
-<!--                                <i class="fas fa-hammer me-1"></i>Мои услуги-->
-<!--                            </a>-->
-<!--                        {% endif %}-->
-<!--                    {% endif %}-->
                 </div>
 
                 <div class="d-flex gap-2">
@@ -127,12 +119,6 @@
                                     <i class="fas fa-id-card me-2"></i>Профиль
                                 </a></li>
                                 {% endif %}
-<!--                                <li><a class="dropdown-item" href="{% url 'users:user_update' %}">-->
-<!--                                    <i class="fas fa-user-edit me-2"></i>Редактировать-->
-<!--                                </a></li>-->
-<!--                                <li><a class="dropdown-item" href="{% url 'users:user_change_password' %}">-->
-<!--                                    <i class="fas fa-key me-2"></i>Сменить пароль-->
-<!--                                </a></li>fas fa-user-cog-->
 
                                 {% if user.role == 'master' %}
                                 <li><hr class="dropdown-divider"></li>
@@ -176,11 +162,6 @@
                         <a href="{% url 'users:user_register' %}" class="btn btn-outline-light btn-sm">Регистрация</a>
                     {% endif %}
                 </div>
-
-<!--                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader"-->
-<!--                        aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">-->
-<!--                    <span class="navbar-toggler-icon"></span>-->
-<!--                </button>-->
             </div>
         </div>
     </header>
@@ -210,11 +191,19 @@
     <!-- Подвал -->
     <footer class="text-body-secondary py-5">
         <div class="container">
-            <p class="float-end mb-1">
-                <a href="#">Наверх</a>
-            </p>
-            <p class="mb-1">&copy; 2026 Сервис Мастеров</p>
-            <p class="mb-0">Платформа для поиска и заказа услуг мастеров</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="float-end mb-1">
+                        <a href="#">Наверх</a>
+                    </p>
+                    <p class="mb-1">&copy; 2026 Сервис Мастеров</p>
+                    <p class="mb-0">Платформа для поиска и заказа услуг мастеров</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="{% url 'services:privacy_policy' %}" class="text-decoration-none me-3">Политика конфиденциальности</a>
+                    <a href="#" class="text-decoration-none">Пользовательское соглашение</a>
+                </div>
+            </div>
         </div>
     </footer>
 

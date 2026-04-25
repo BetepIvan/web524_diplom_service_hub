@@ -61,25 +61,6 @@ class UserProfileView(DetailView):
         return context_data
 
 
-class UserUpdateView(UpdateView):
-    model = User
-    form_class = UserUpdateForm
-    template_name = 'users/user_register_update.html'
-    success_url = reverse_lazy('users:user_profile')
-    extra_context = {
-        'hide_jumbotron': True
-    }
-
-    def get_object(self, queryset=None):
-        return self.request.user
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data()
-        user_obj = self.get_object()
-        context_data['title'] = f'Изменить профиль: {user_obj}'
-        return context_data
-
-
 class UserPasswordChangeView(PasswordChangeView):
     form_class = UserChangePasswordForm
     template_name = 'users/user_change_password.html'
