@@ -5,7 +5,7 @@ from services.views import (
     service_toggle_activity, ServiceDeactivatedListView, ServiceSearchListView,
     CategorySearchListView, AllSearchView,
     CategoryCreateView, CategoryUpdateView, CategoryDeleteView, CategorySuggestView, CategoryModerateView,
-    ServiceByMasterListView, PortfolioCreateView, ServiceLibraryListView, MasterServiceCreateView, MyServicesListView,
+    PortfolioCreateView, ServiceLibraryListView, MasterServiceCreateView, MyServicesListView,
     MasterServiceDeleteView, MasterServiceToggleView, MasterServicesListView, ServiceTemplateCreateView
 )
 from services.apps import ServicesConfig
@@ -22,10 +22,10 @@ urlpatterns = [
     path('categories/<int:pk>/edit/', CategoryUpdateView.as_view(), name='category_edit'),
     path('categories/<int:pk>/delete/', CategoryDeleteView.as_view(), name='category_delete'),
     path('categories/suggest/', CategorySuggestView.as_view(), name='category_suggest'),
-    path('categories/<int:pk>/services/', cache_page(60)(ServicesByCategoryListView.as_view()), name='category_services'),
+    path('categories/<int:pk>/services/', cache_page(60)(ServicesByCategoryListView.as_view()),
+         name='category_services'),
     path('categories/search/', CategorySearchListView.as_view(), name='categories_search'),
     path('categories/<int:pk>/moderate/', CategoryModerateView.as_view(), name='category_moderate'),
-    path('categories/suggest/', CategorySuggestView.as_view(), name='category_suggest'),
 
     path('all_search/', AllSearchView.as_view(), name='all_search'),
 
@@ -38,16 +38,20 @@ urlpatterns = [
     path('services/update/<int:pk>/', never_cache(ServiceUpdateView.as_view()), name='service_update'),
     path('services/toggle/<int:pk>/', service_toggle_activity, name='service_toggle_activity'),
     path('services/delete/<int:pk>/', ServiceDeleteView.as_view(), name='service_delete'),
+
+    # Service Library
     path('services/library/', ServiceLibraryListView.as_view(), name='service_library'),
     path('services/library/add/<int:pk>/', MasterServiceCreateView.as_view(), name='master_service_add'),
-    path('services/master/<int:pk>/', MasterServicesListView.as_view(), name='master_services'),
     path('services/template/create/', ServiceTemplateCreateView.as_view(), name='service_template_create'),
 
-    path('master/<int:pk>/services/', ServiceByMasterListView.as_view(), name='master_services'),
+    # Master Services
+    path('master/<int:pk>/services/', MasterServicesListView.as_view(), name='master_services'),
 
-    path('portfolio/create/', PortfolioCreateView.as_view(), name='portfolio_create'),
-
+    # My Services
     path('my-services/', MyServicesListView.as_view(), name='my_services'),
     path('my-services/delete/<int:pk>/', MasterServiceDeleteView.as_view(), name='master_service_delete'),
     path('my-services/toggle/<int:pk>/', MasterServiceToggleView.as_view(), name='master_service_toggle'),
+
+    # Portfolio
+    path('portfolio/create/', PortfolioCreateView.as_view(), name='portfolio_create'),
 ]

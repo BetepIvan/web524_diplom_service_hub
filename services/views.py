@@ -8,6 +8,7 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib import messages
+from django.http import HttpResponseRedirect
 
 from services.models import Category, Service, ServiceImage, Portfolio, MasterService
 from services.forms import ServiceForm, ServiceCreateForm, ServiceAdminForm, ServiceImageForm, CategoryForm, \
@@ -488,14 +489,23 @@ class MasterServicesListView(ListView):
 
 class MasterServiceDeleteView(LoginRequiredMixin, DeleteView):
     model = MasterService
-    template_name = 'services/master_service_confirm_delete.html'
-    success_url = reverse_lazy('services:my_services')
+    success_url = reverse_lazy('services:services_list')
 
     def dispatch(self, request, *args, **kwargs):
         service = self.get_object()
-        if service.master != request.user and request.user.role != 'admin':
+        if service.master != request.user and request.user.role not in ['admin', 'moderator']:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        # Удаляем без подтверждения
+        self.object = self.get_object()
+        self.object.delete()
+        messages.success(request, 'Услуга успешно удалена')
+        return HttpResponseRedirect(self.get_success_url())
+
+    def post(self, request, *args, **kwargs):
+        return self.get(request, *args, **kwargs)
 
 
 class MasterServiceToggleView(LoginRequiredMixin, View):

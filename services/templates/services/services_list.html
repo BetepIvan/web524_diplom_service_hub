@@ -38,11 +38,11 @@
                         </a>
                         {% if user == service.master %}
                         <div>
-                            <a href="{% url 'services:master_service_toggle' service.pk %}" class="btn btn-sm btn-outline-warning me-1" 
+                            <a href="{% url 'services:master_service_toggle' service.pk %}" class="btn btn-sm btn-outline-warning me-1"
                                onclick="event.preventDefault(); document.getElementById('toggle-form-{{ service.pk }}').submit();">
                                 {% if service.is_active %}Деактивировать{% else %}Активировать{% endif %}
                             </a>
-                            <a href="{% url 'services:master_service_delete' service.pk %}" class="btn btn-sm btn-outline-danger" 
+                            <a href="{% url 'services:master_service_delete' service.pk %}" class="btn btn-sm btn-outline-danger"
                                onclick="return confirm('Удалить услугу?')">
                                 <i class="fas fa-trash"></i>
                             </a>
