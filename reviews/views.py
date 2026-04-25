@@ -131,14 +131,17 @@ class ReviewCreateForMasterView(LoginRequiredMixin, CreateView):
     extra_context = {'title': 'Оставить отзыв'}
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.role not in [UserRoles.USER, UserRoles.ADMIN]:
+        # Разрешаем оставлять отзывы и клиентам, и мастерам
+        if request.user.role not in [UserRoles.USER, UserRoles.MASTER, UserRoles.ADMIN]:
             raise PermissionDenied
+
         # Проверяем, оставлял ли пользователь уже отзыв этому мастеру
         master_id = self.kwargs.get('master_id')
         if Review.objects.filter(author=request.user, master_id=master_id).exists():
             from django.contrib import messages
             messages.warning(request, 'Вы уже оставляли отзыв этому мастеру')
             return redirect('users:master_detail', pk=master_id)
+
         return super().dispatch(request, *args, **kwargs)
 
     def get_initial(self):

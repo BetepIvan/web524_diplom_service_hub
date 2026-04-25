@@ -47,7 +47,7 @@
 <body>
 
     <!-- Шапка сайта -->
-    <header data-bs-theme="dark">
+    <header data-bs-theme="dark" class="sticky-top">
 
         <div class="navbar navbar-dark bg-dark shadow-sm">
             <div class="container">
@@ -59,7 +59,13 @@
                 <!-- Поиск -->
                 <div class="flex-grow-2 mx-4">
                     <form action="{% url 'services:all_search' %}" method="get" class="d-flex">
-                        <input name="q" class="form-control form-control-sm" type="text" placeholder="Поиск...">
+                        <input name="q" class="form-control form-control-sm" type="text"
+                               placeholder="Чем вам помочь?"
+                               value="{{ request.GET.q|default:'' }}"
+                               autocomplete="off">
+                        <button type="submit" class="btn btn-outline-light btn-sm ms-1">
+                            <i class="fas fa-search"></i>
+                        </button>
                     </form>
                 </div>
 
@@ -70,17 +76,14 @@
                     <a href="{% url 'services:services_list' %}" class="btn btn-outline-light btn-sm">
                         <i class="fas fa-list me-1"></i>Все услуги
                     </a>
-                    {% if user.is_authenticated %}
-                        {% if user.role == 'admin' or user.role == 'moderator' %}
-                            <a href="{% url 'users:users_list' %}" class="btn btn-outline-info btn-sm">
-                                <i class="fas fa-users me-1"></i>Пользователи
-                            </a>
-                        {% elif user.role == 'master' or user.role == 'user' %}
-                            <a href="{% url 'users:users_list' %}" class="btn btn-outline-info btn-sm">
-                                <i class="fas fa-users me-1"></i>Все мастера
-                            </a>
+                    <a href="{% url 'users:users_list' %}" class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-users me-1"></i>
+                        {% if user.is_authenticated and user.role == 'admin' or user.role == 'moderator' %}
+                            Пользователи
+                        {% else %}
+                            Все мастера
                         {% endif %}
-                    {% endif %}
+                    </a>
                     {% if user.role == 'user' and not user.has_master_profile %}
                         <a href="{% url 'users:become_master' %}" class="btn btn-outline-success btn-sm">
                             <i class="fas fa-user-graduate me-1"></i>Стать мастером
@@ -117,7 +120,7 @@
                                 </a></li>
                                 {% if user.role == 'master' %}
                                 <li><a class="dropdown-item" href="{% url 'users:master_detail' user.pk %}">
-                                    <i class="fas fa-user-cog me-2"></i>Профиль мастера
+                                    <i class="fas fa-id-card me-2"></i>Профиль мастера
                                 </a></li>
                                 {% else %}
                                 <li><a class="dropdown-item" href="{% url 'users:user_profile' %}">
@@ -129,7 +132,7 @@
 <!--                                </a></li>-->
 <!--                                <li><a class="dropdown-item" href="{% url 'users:user_change_password' %}">-->
 <!--                                    <i class="fas fa-key me-2"></i>Сменить пароль-->
-<!--                                </a></li>-->
+<!--                                </a></li>fas fa-user-cog-->
 
                                 {% if user.role == 'master' %}
                                 <li><hr class="dropdown-divider"></li>
@@ -137,8 +140,8 @@
                                     <i class="fas fa-plus-circle me-2"></i>Добавить услугу
                                 </a></li>
                                 {% if user.role == 'master' %}
-                                <li><a class="dropdown-item" href="{% url 'users:master_detail' user.pk %}">
-                                    <i class="fas fa-list me-2"></i>Мои услуги
+                                <li><a class="dropdown-item" href="{% url 'users:profile_manage' %}">
+                                    <i class="fas fa-cog me-2"></i>Управление профилем
                                 </a></li>
                                 {% endif %}
                                 {% endif %}

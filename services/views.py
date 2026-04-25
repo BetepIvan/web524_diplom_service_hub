@@ -188,15 +188,57 @@ class CategorySearchListView(ListView):
 
 
 class AllSearchView(ListView):
-    model = Category
+    """Поиск мастеров по названию услуги или категории"""
+    model = User
     template_name = 'services/all_search_results.html'
-    extra_context = {'title': 'Результат поискового запроса'}
+    context_object_name = 'results'
+    paginate_by = 12
+    extra_context = {'title': 'Результаты поиска'}
+
+    def dispatch(self, request, *args, **kwargs):
+        query = request.GET.get('q', '').strip()
+        if not query:
+            return redirect('services:index')
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        query = self.request.GET.get('q')
-        service_list = Service.objects.filter(Q(title__icontains=query))
-        category_list = Category.objects.filter(Q(name__icontains=query))
-        return list(service_list) + list(category_list)
+        query = self.request.GET.get('q', '').strip()
+        self.search_query = query
+
+        # Поиск категорий по названию
+        categories = Category.objects.filter(
+            Q(name__icontains=query) &
+            Q(is_active=True) &
+            Q(is_moderated=True)
+        )
+
+        # Поиск услуг (шаблонов) по названию
+        services = Service.objects.filter(
+            Q(title__icontains=query) &
+            Q(is_template=True)
+        )
+
+        # Получаем мастеров через найденные услуги
+        masters_from_services = User.objects.filter(
+            my_services__service_template__in=services,
+            my_services__is_active=True,
+            role='master'
+        ).distinct()
+
+        # Получаем мастеров через найденные категории
+        masters_from_categories = User.objects.filter(
+            my_services__service_template__category__in=categories,
+            my_services__is_active=True,
+            role='master'
+        ).distinct()
+
+        # Объединяем и возвращаем уникальных мастеров
+        return (masters_from_services | masters_from_categories).distinct()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.search_query
+        return context
 
 
 class ServiceListView(ListView):

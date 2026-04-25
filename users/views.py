@@ -104,7 +104,7 @@ class UserLogoutView(LogoutView):
     }
 
 
-class UserListView(LoginRequiredMixin, ListView):
+class UserListView(ListView):
     model = User
     template_name = 'users/users.html'
     paginate_by = 6
@@ -122,10 +122,17 @@ class UserListView(LoginRequiredMixin, ListView):
                 Q(email__icontains=search)
             )
 
-        # Фильтр по роли
-        role = self.request.GET.get('role')
-        if role:
-            queryset = queryset.filter(role=role)
+        # Фильтр по роли из GET-параметра
+        role_filter = self.request.GET.get('role')
+
+        # Для админа и модератора - показываем всех или фильтруем по роли
+        if user.is_authenticated and user.role in ['admin', 'moderator']:
+            if role_filter:
+                queryset = queryset.filter(role=role_filter)
+            # else: показываем всех пользователей
+        else:
+            # Для всех остальных - только мастеров
+            queryset = queryset.filter(role='master')
 
         # Фильтр по услуге
         service_id = self.request.GET.get('service')
@@ -136,10 +143,6 @@ class UserListView(LoginRequiredMixin, ListView):
                 is_active=True
             ).values_list('master_id', flat=True)
             queryset = queryset.filter(id__in=masters_ids)
-        else:
-            # Если нет фильтра услуги, мастера и клиенты видят только мастеров
-            if user.role in ['master', 'user']:
-                queryset = queryset.filter(role='master')
 
         return queryset
 
@@ -147,6 +150,7 @@ class UserListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         service_id = self.request.GET.get('service')
+        role_filter = self.request.GET.get('role')
 
         if service_id:
             from services.models import Service
@@ -155,12 +159,15 @@ class UserListView(LoginRequiredMixin, ListView):
             context['title'] = f'Мастера - {service.title}'
             context['description'] = f'Специалисты, оказывающие услугу "{service.title}"'
             context['current_service_id'] = service_id
-        elif user.role in ['master', 'user']:
+        elif user.is_authenticated and user.role in ['admin', 'moderator']:
+            context['title'] = 'Управление пользователями'
+            if role_filter:
+                context['description'] = f'Список пользователей с ролью: {role_filter}'
+            else:
+                context['description'] = 'Полный список пользователей системы'
+        else:
             context['title'] = 'Мастера'
             context['description'] = 'Выберите мастера для вашей задачи'
-        else:
-            context['title'] = 'Управление пользователями'
-            context['description'] = 'Полный список пользователей системы'
 
         return context
 
@@ -192,7 +199,7 @@ class MasterDetailView(DetailView):
         master = self.get_object()
 
         # Получаем услуги мастера
-        if self.request.user == master or self.request.user.role == 'admin':
+        if self.request.user.is_authenticated and (self.request.user == master or self.request.user.role == 'admin'):
             context['services'] = MasterService.objects.filter(master=master).select_related('service_template',
                                                                                              'service_template__category')
         else:

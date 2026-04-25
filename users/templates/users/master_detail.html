@@ -75,19 +75,23 @@
                     <div class="row">
                         {% if master.portfolio_items.all %}
                             {% for example in master.portfolio_items.all %}
-                            <div class="col-md-4 mb-3">
-                                <div class="card h-100">
-                                    <img src="{{ example.image.url }}" class="card-img-top" style="height: 150px; object-fit: cover;" alt="{{ example.title }}">
-                                    <div class="card-body">
-                                        <h6 class="card-title">{{ example.title }}</h6>
-                                        <p class="card-text small">{{ example.description|truncatewords:10 }}</p>
-                                        <p class="card-text text-primary fw-bold">{{ example.price }} ₽</p>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <img src="{{ example.image.url }}" class="card-img-top rounded-top" style="height: 180px; object-fit: cover;" alt="{{ example.title }}">
+                                    <div class="card-body d-flex flex-column">
+                                        <h6 class="card-title fw-semibold mb-2">{{ example.title }}</h6>
+                                        <p class="card-text small text-muted mb-3">{{ example.description|truncatewords:15|default:"Нет описания" }}</p>
+                                        <div class="mt-auto">
+                                            <p class="card-text fw-bold text-primary mb-0">{{ example.price|default:"договорная" }} ₽</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             {% endfor %}
                         {% else %}
-                            <p class="text-muted text-center">Пока нет примеров работ</p>
+                            <div class="col-12">
+                                <p class="text-muted text-center py-4">Пока нет примеров работ</p>
+                            </div>
                         {% endif %}
                     </div>
                     {% if user == master %}
@@ -204,13 +208,29 @@
             <!-- Карточка 5: Отзывы -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="fas fa-star me-2"></i>Отзывы</h5>
-                    {% if user.is_authenticated and user.role == 'user' and not has_review %}
-                    <a href="{% url 'reviews:review_create_for_master' master.pk %}" class="btn btn-sm btn-outline-light">
-                        <i class="fas fa-pen me-1"></i>Оставить отзыв
-                    </a>
-                    {% elif user.is_authenticated and user.role == 'user' and has_review %}
-                    <span class="badge bg-success">Вы уже оставили отзыв</span>
+                    <h5 class="mb-0">
+                        <i class="fas fa-star me-2"></i>Отзывы
+                        {% if reviews %}
+                        <span class="ms-2">
+                            {% with avg_rating=reviews|average_rating %}
+                            {% for i in "12345"|make_list %}
+                                {% if forloop.counter <= avg_rating %}★{% else %}☆{% endif %}
+                            {% endfor %}
+<!--                            <span class="ms-1">{{ avg_rating|floatformat:1 }}</span>-->
+                            {% endwith %}
+                        </span>
+                        {% endif %}
+                    </h5>
+                    {% if user.is_authenticated and not has_review %}
+                        {% if user.role == 'user' or user.role == 'master' %}
+                        <a href="{% url 'reviews:review_create_for_master' master.pk %}" class="btn btn-sm btn-outline-light">
+                            <i class="fas fa-pen me-1"></i>Оставить отзыв
+                        </a>
+                        {% endif %}
+                    {% elif user.is_authenticated and has_review %}
+                        {% if user.role == 'user' or user.role == 'master' %}
+                        <span class="badge bg-success">Вы уже оставили отзыв</span>
+                        {% endif %}
                     {% endif %}
                 </div>
                 <div class="card-body">
@@ -270,7 +290,7 @@
                                 ☆
                             {% endif %}
                         {% endfor %}
-                        <span class="text-dark ms-2">{{ avg_rating }} ({{ reviews.count }})</span>
+                        <span class="text-dark ms-2">{{ avg_rating|floatformat:1 }} ({{ reviews.count }})</span>
                     </div>
                     {% endwith %}
                 </div>
@@ -289,6 +309,22 @@
                     <button class="btn btn-primary w-100" onclick="alert('Связь с мастером в разработке')">
                         <i class="fas fa-paper-plane me-1"></i>Связаться
                     </button>
+                </div>
+            </div>
+
+            <!-- Карточка 3: Достижения -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-trophy me-2"></i>Достижения</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="row">
+                        <div class="col-12">
+                            <i class="fas fa-medal fa-3x text-muted mb-3"></i>
+                            <p class="text-muted mb-0">Раздел в разработке</p>
+                            <small class="text-muted">Скоро здесь появятся достижения мастера</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>  <!-- Закрытие правой колонки col-md-4 -->
