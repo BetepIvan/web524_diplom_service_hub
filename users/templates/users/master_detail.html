@@ -155,33 +155,44 @@
                 <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0"><i class="fas fa-tools me-2"></i>Услуги и цены</h5>
                     {% if user == master %}
-                    <a href="{% url 'services:service_create' %}" class="btn btn-sm btn-primary">
+                    <a href="{% url 'services:service_library' %}" class="btn btn-sm btn-light">
                         <i class="fas fa-plus me-1"></i>Добавить
                     </a>
                     {% endif %}
                 </div>
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
-                        {% for service in services %}
-                        <div class="list-group-item">
+                        {% for master_service in services %}
+                        <div class="list-group-item py-2 {% if not master_service.is_active %}bg-light{% endif %}">
                             <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-1">{{ service.title }}</h6>
-                                    <small class="text-muted">{{ service.category.name }}</small>
-                                    {% if service.description %}
-                                    <p class="mb-0 small text-muted">{{ service.description|truncatewords:15 }}</p>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <strong>{{ master_service.service_template.title }}</strong>
+                                    {% if not master_service.is_active %}
+                                    <span class="badge bg-secondary">скрыта</span>
                                     {% endif %}
                                 </div>
-                                <div class="text-end">
-                                    <span class="fw-bold text-primary">{{ service.price|default:"договорная" }} ₽</span>
-                                    <a href="{% url 'services:service_detail' service.pk %}" class="btn btn-sm btn-outline-info ms-2">
-                                        <i class="fas fa-info-circle"></i>
-                                    </a>
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="fw-bold text-primary">
+                                        {% if master_service.price %}
+                                            {{ master_service.price }} ₽
+                                        {% else %}
+                                            договорная
+                                        {% endif %}
+                                    </span>
+                                    {% if user == master %}
+                                    <form method="post" action="{% url 'services:master_service_toggle' master_service.pk %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm p-0 border-0 bg-transparent"
+                                                title="{% if master_service.is_active %}Скрыть услугу{% else %}Показать услугу{% endif %}">
+                                            <i class="fas {% if master_service.is_active %}fa-eye text-success{% else %}fa-eye-slash text-secondary{% endif %} fa-lg"></i>
+                                        </button>
+                                    </form>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
                         {% empty %}
-                        <div class="list-group-item text-center text-muted">
+                        <div class="list-group-item text-center text-muted py-3">
                             Услуги не добавлены
                         </div>
                         {% endfor %}

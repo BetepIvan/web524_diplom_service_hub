@@ -15,7 +15,7 @@ from users.forms import (
     UserForm, BecomeMasterForm, MasterProfileForm
 )
 from users.services import send_register_email, send_new_password
-from services.models import Service
+from services.models import Service, MasterService
 from reviews.models import Review
 
 
@@ -158,8 +158,18 @@ class MasterDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         master = self.get_object()
-        context['services'] = Service.objects.filter(owner=master, is_active=True)
-        context['reviews'] = Review.objects.filter(service__owner=master, sign_of_review=True)[:10]
+
+        # Получаем услуги мастера
+        if self.request.user == master or self.request.user.role == 'admin':
+            context['services'] = MasterService.objects.filter(master=master).select_related('service_template',
+                                                                                             'service_template__category')
+        else:
+            context['services'] = MasterService.objects.filter(master=master, is_active=True).select_related(
+                'service_template', 'service_template__category')
+
+        # Получаем отзывы на услуги мастера (через master_service)
+        context['reviews'] = Review.objects.filter(master_service__master=master, sign_of_review=True)[:10]
+
         context['title'] = f'Мастер: {master.get_full_name()}'
         context['hide_jumbotron'] = True
         return context

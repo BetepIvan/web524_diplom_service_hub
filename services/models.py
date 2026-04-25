@@ -31,50 +31,54 @@ class Category(models.Model):
 
 
 class Service(models.Model):
-    """Услуга, которую предлагает мастер"""
-
-    class StatusChoices(models.TextChoices):
-        ACTIVE = 'active', 'Активна'
-        IN_PROGRESS = 'in_progress', 'В работе'
-        COMPLETED = 'completed', 'Завершена'
-        ARCHIVED = 'archived', 'Архивирована'
-
+    """Услуга - шаблон (библиотека)"""
     title = models.CharField(max_length=250, verbose_name='Название услуги')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория')
     description = models.TextField(verbose_name='Описание услуги', **NULLABLE)
-    photo = models.ImageField(upload_to='services/', **NULLABLE, verbose_name='Фотография')
-    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена (₽)', **NULLABLE)
-    location = models.CharField(max_length=200, verbose_name='Город/Адрес', **NULLABLE)
-
-    is_active = models.BooleanField(default=True, verbose_name='Активность объявления')
-    status = models.CharField(
-        max_length=20,
-        choices=StatusChoices.choices,
-        default=StatusChoices.ACTIVE,
-        verbose_name='Статус'
-    )
-
-    owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        **NULLABLE,
-        verbose_name='Мастер'
-    )
-    views = models.IntegerField(default=0, verbose_name='Просмотры')
+    is_template = models.BooleanField(default=True, verbose_name='Шаблон услуги')
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE, verbose_name='Создал')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
-    updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления')
 
     def __str__(self):
-        return f'{self.title} ({self.category})'
+        return self.title
 
-    def views_count(self):
-        self.views += 1
-        self.save()
+    @property
+    def specialists_count(self):
+        """Количество мастеров, оказывающих эту услугу"""
+        return self.master_services.filter(is_active=True).count()
 
     class Meta:
-        verbose_name = 'услуга'
-        verbose_name_plural = 'услуги'
+        verbose_name = 'услуга (шаблон)'
+        verbose_name_plural = 'услуги (библиотека)'
+        ordering = ['title']
+
+
+class MasterService(models.Model):
+    """Услуга мастера - конкретная цена от конкретного мастера"""
+    master = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='my_services',
+        verbose_name='Мастер'
+    )
+    service_template = models.ForeignKey(
+        Service,
+        on_delete=models.CASCADE,
+        related_name='master_services',
+        verbose_name='Услуга'
+    )
+    price = models.DecimalField(max_digits=10, decimal_places=2, **NULLABLE, verbose_name='Цена (₽)')
+    is_active = models.BooleanField(default=True, verbose_name='Активна')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
+
+    def __str__(self):
+        return f'{self.service_template.title} - {self.master.email}'
+
+    class Meta:
+        verbose_name = 'услуга мастера'
+        verbose_name_plural = 'услуги мастеров'
         ordering = ['-created_at']
+        unique_together = ['master', 'service_template']
 
 
 class ServiceImage(models.Model):

@@ -1,34 +1,108 @@
 {% extends 'services/base.html' %}
 
 {% block content %}
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Категории услуг</h1>
-        <div>
-            {% if user.role == 'admin' %}
-            <a href="{% url 'services:category_create' %}" class="btn btn-primary">
-                <i class="fas fa-plus me-1"></i>Создать категорию
-            </a>
-            {% elif user.role == 'master' %}
-            <a href="{% url 'services:category_suggest' %}" class="btn btn-outline-primary">
-                <i class="fas fa-lightbulb me-1"></i>Предложить категорию
-            </a>
-            {% endif %}
+<div class="HomeRubricMenu">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="HomeRubricMenu-Menu">
+                    <div class="HomeRubricMenu-MenuItem main-category">
+                        <strong>Все категории</strong>
+                    </div>
+                    {% for category in categories %}
+                    <div class="HomeRubricMenu-MenuItem">
+                        <a href="#" data-category="{{ category.id }}" class="category-link {% if selected_category_id == category.id %}active{% endif %}">
+                            {{ category.name }}
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                {% for category in categories %}
+                <div class="HomeRubricMenu-Content" data-content="{{ category.id }}"
+                     style="{% if selected_category_id == category.id %}display: block;{% else %}display: none;{% endif %}">
+
+                    <div class="HomeRubricMenu-TopSpecializations">
+                        <strong>Услуги</strong>
+                        {% for service in category.service_set.all|slice:":6" %}
+                        <div class="HomeRubricMenu-TopSpecialization">
+                            <a class="Link Link_theme_blackText HomeRubricMenu-TopSpecializationLink"
+                               href="{% url 'services:category_services' category.pk %}?service={{ service.id }}">
+                                {{ service.title }}
+                            </a>
+                            <div class="Text Text_size_s Text_color_greyDark Text_weight_bold">
+                                {{ service.specialists_count }} специалистов
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="HomeRubricMenu-ContentList">
+                        {% for service in category.service_set.all|slice:"6:" %}
+                        <div class="HomeRubricMenu-ContentItem">
+                            <a class="Link Link_theme_blackText HomeRubricMenu-ContentItemLink"
+                               href="{% url 'services:category_services' category.pk %}?service={{ service.id }}">
+                                {{ service.title }}
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
-
-    <div class="row">
-        {% for object in object_list %}
-            {% include 'services/includes/inc_category.html' with object=object %}
-        {% empty %}
-            <div class="col-12 text-center py-5">
-                <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
-                <h3>Категории не найдены</h3>
-                <p class="text-muted">Категории появятся после добавления</p>
-            </div>
-        {% endfor %}
-    </div>
-
-    {% include 'services/includes/inc_pagination.html' %}
 </div>
+
+<style>
+/* ... стили как раньше ... */
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const categoryLinks = document.querySelectorAll('.category-link');
+    const contents = document.querySelectorAll('.HomeRubricMenu-Content');
+
+    // Если есть выбранная категория, показываем её
+    const activeCategory = document.querySelector('.category-link.active');
+    if (activeCategory) {
+        const categoryId = activeCategory.dataset.category;
+        const selectedContent = document.querySelector(`.HomeRubricMenu-Content[data-content="${categoryId}"]`);
+        if (selectedContent) {
+            selectedContent.style.display = 'block';
+        }
+    }
+
+    categoryLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const categoryId = this.dataset.category;
+
+            // Скрыть все контенты
+            contents.forEach(content => {
+                content.style.display = 'none';
+            });
+
+            // Показать выбранный
+            const selectedContent = document.querySelector(`.HomeRubricMenu-Content[data-content="${categoryId}"]`);
+            if (selectedContent) {
+                selectedContent.style.display = 'block';
+            }
+
+            // Обновить активный класс
+            categoryLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+            this.classList.add('active');
+
+            // Обновить URL без перезагрузки
+            const url = new URL(window.location.href);
+            url.searchParams.set('category', categoryId);
+            window.history.pushState({}, '', url);
+        });
+    });
+});
+</script>
 {% endblock %}

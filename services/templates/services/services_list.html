@@ -1,0 +1,78 @@
+{% extends 'services/base.html' %}
+{% load services_tags %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ title }}</h1>
+        {% if user.role == 'master' %}
+        <a href="{% url 'services:service_library' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Добавить услугу
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="row">
+        {% for service in services %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">{{ service.service_template.title }}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small">
+                        <i class="fas fa-tag me-1"></i>{{ service.service_template.category.name }}
+                    </p>
+                    <p class="card-text">{{ service.service_template.description|truncatewords:20|default:"Нет описания" }}</p>
+                    <p class="fw-bold text-primary">
+                        Цена: {% if service.price %}{{ service.price }} ₽{% else %}договорная{% endif %}
+                    </p>
+                    <p class="text-muted small">
+                        <i class="fas fa-user me-1"></i>Мастер: {{ service.master.get_full_name|default:service.master.email }}
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{% url 'users:master_detail' service.master.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-user me-1"></i>К мастеру
+                        </a>
+                        {% if user == service.master %}
+                        <div>
+                            <a href="{% url 'services:master_service_toggle' service.pk %}" class="btn btn-sm btn-outline-warning me-1" 
+                               onclick="event.preventDefault(); document.getElementById('toggle-form-{{ service.pk }}').submit();">
+                                {% if service.is_active %}Деактивировать{% else %}Активировать{% endif %}
+                            </a>
+                            <a href="{% url 'services:master_service_delete' service.pk %}" class="btn btn-sm btn-outline-danger" 
+                               onclick="return confirm('Удалить услугу?')">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                            <form id="toggle-form-{{ service.pk }}" method="post" action="{% url 'services:master_service_toggle' service.pk %}" style="display: none;">
+                                {% csrf_token %}
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="fas fa-tools fa-4x text-muted mb-3"></i>
+            <h3>Услуги не найдены</h3>
+            {% if user.role == 'master' %}
+            <p class="text-muted">Вы ещё не добавили ни одной услуги</p>
+            <a href="{% url 'services:service_library' %}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i>Добавить услугу из библиотеки
+            </a>
+            {% else %}
+            <p class="text-muted">В этой категории пока нет услуг</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+        {% include 'services/includes/inc_pagination.html' %}
+    {% endif %}
+</div>
+{% endblock %}

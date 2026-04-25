@@ -10,4 +10,4 @@ class ReviewForm(StyleFormMixin, forms.ModelForm):
 
     class Meta:
         model = Review
-        fields = ('service', 'title', 'content', 'slug')
+        fields = ('master_service', 'title', 'content', 'slug')

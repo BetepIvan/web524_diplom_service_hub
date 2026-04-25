@@ -15,15 +15,13 @@ class ReviewListView(ListView):
     model = Review
     extra_context = {
         'title': 'Наши отзывы',
-        'description': 'Слова благодарности от тех, кто уже выбрал нас. Реальные отзывы, искренние эмоции и истории дружбы, которые согревают. Присоединяйтесь к нашей большой семье.'
+        'description': 'Слова благодарности от тех, кто уже выбрал нас.'
     }
     template_name = 'reviews/reviews.html'
     paginate_by = 3
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.filter(sign_of_review=True)
-        return queryset
+        return super().get_queryset().filter(sign_of_review=True)
 
 
 class ReviewDeactivatedListView(ListView):
@@ -44,18 +42,14 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
     model = Review
     form_class = ReviewForm
     template_name = 'reviews/create_updata.html'
-    extra_context = {
-        'title': 'Добавить отзыв'
-    }
+    extra_context = {'title': 'Добавить отзыв'}
 
     def form_valid(self, form):
         if self.request.user.role not in [UserRoles.USER, UserRoles.ADMIN]:
             return HttpResponseForbidden
-        self.object = form.save()
-        print(self.object.slug)
+        self.object = form.save(commit=False)
         if self.object.slug == 'temp_slug':
             self.object.slug = generate_slug()
-            print(self.object.slug)
         self.object.author = self.request.user
         self.object.save()
         return super().form_valid(form)

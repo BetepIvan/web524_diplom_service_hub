@@ -11,7 +11,7 @@
             <p class="card-text">Название: {{ object.title }}</p>
             <p class="card-text">Категория: {{ object.category.name }}</p>
             <p class="card-text">Описание: {{ object.description|default:"-" }}</p>
-            <span class="text-muted">Цена: {{ object.price|default:"договорная" }} ₽</span><br>
+            <span class="text-muted">Цена: {{ object.price|default:"договорная" }} ₽</span>
             <span class="text-muted">Город: {{ object.location|default:"не указан" }}</span><br>
             <span class="text-muted">Почта мастера: {{ object.owner.email|default:"Без мастера" }}</span><br>
             <span class="text-muted">Имя мастера: {{ object.owner.first_name|default:"Не указано" }}</span><br>

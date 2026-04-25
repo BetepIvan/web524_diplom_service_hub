@@ -13,7 +13,7 @@ class Review(models.Model):
     created = models.DateTimeField(verbose_name='Создан', auto_now_add=True)
     sign_of_review = models.BooleanField(default=False, verbose_name='Активность')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE, verbose_name='Автор', related_name='reviews')
-    service = models.ForeignKey('services.Service', on_delete=models.CASCADE, related_name='reviews', verbose_name='Услуга')
+    master_service = models.ForeignKey('services.MasterService', on_delete=models.CASCADE, related_name='reviews', verbose_name='Услуга мастера')
 
     def __str__(self):
         return f'{self.title}'

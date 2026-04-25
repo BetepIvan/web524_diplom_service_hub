@@ -1,14 +1,17 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
+from django.views import View
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.forms import inlineformset_factory
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.contrib import messages
 
-from services.models import Category, Service, ServiceImage, Portfolio
-from services.forms import ServiceForm, ServiceCreateForm, ServiceAdminForm, ServiceImageForm, CategoryForm, PortfolioForm
+from services.models import Category, Service, ServiceImage, Portfolio, MasterService
+from services.forms import ServiceForm, ServiceCreateForm, ServiceAdminForm, ServiceImageForm, CategoryForm, \
+    PortfolioForm, MasterServiceForm, ServiceTemplateForm
 from services.services import send_views_mail
 from users.services import send_service_creation
 from users.models import UserRoles, User
@@ -27,16 +30,21 @@ class CategoryListView(ListView):
     model = Category
     template_name = 'services/categories.html'
     context_object_name = 'categories'
-    paginate_by = 6
     extra_context = {
-        'title': 'Все категории услуг',
-        'description': 'Все доступные категории услуг'
+        'title': 'Категории услуг',
+        'description': 'Выберите категорию услуг'
     }
 
     def get_queryset(self):
-        if self.request.user.is_authenticated and self.request.user.role in ['admin', 'moderator']:
-            return Category.objects.all()
-        return Category.objects.filter(is_active=True, is_moderated=True)
+        return Category.objects.filter(is_active=True, is_moderated=True).prefetch_related('service_set')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Получаем ID категории из GET-параметра
+        selected_category_id = self.request.GET.get('category')
+        if selected_category_id:
+            context['selected_category_id'] = int(selected_category_id)
+        return context
 
 
 class CategoryCreateView(LoginRequiredMixin, CreateView):
@@ -132,22 +140,17 @@ class ServicesByCategoryListView(DetailView):
         context = super().get_context_data(**kwargs)
         category = self.get_object()
 
+        # Список всех категорий для левой колонки
         context['categories'] = Category.objects.filter(is_active=True, is_moderated=True)
 
-        services = Service.objects.filter(category=category, is_active=True)
+        # Получаем услуги мастеров в этой категории
+        services_list = MasterService.objects.filter(
+            service_template__category=category,
+            is_active=True
+        ).select_related('master', 'service_template', 'service_template__category')
 
-        price_min = self.request.GET.get('price_min')
-        price_max = self.request.GET.get('price_max')
-        location = self.request.GET.get('location')
-
-        if price_min:
-            services = services.filter(price__gte=price_min)
-        if price_max:
-            services = services.filter(price__lte=price_max)
-        if location:
-            services = services.filter(location__icontains=location)
-
-        paginator = Paginator(services.order_by('-created_at'), 10)
+        # Пагинация
+        paginator = Paginator(services_list, 10)
         page_number = self.request.GET.get('page')
         context['services'] = paginator.get_page(page_number)
         context['title'] = f'Услуги в категории: {category.name}'
@@ -196,16 +199,18 @@ class AllSearchView(ListView):
 
 
 class ServiceListView(ListView):
-    model = Service
+    """Список всех услуг (MasterService)"""
+    model = MasterService
+    template_name = 'services/services_list.html'
+    context_object_name = 'services'
+    paginate_by = 9
     extra_context = {
-        'title': 'Все наши услуги',
-        'description': 'Каждый мастер в нашем сервисе ждет своего клиента.'
+        'title': 'Все услуги',
+        'description': 'Услуги от наших мастеров'
     }
-    template_name = 'services/services.html'
-    paginate_by = 3
 
     def get_queryset(self):
-        return super().get_queryset().filter(is_active=True)
+        return MasterService.objects.filter(is_active=True).select_related('master', 'service_template', 'service_template__category')
 
 
 class ServiceDeactivatedListView(LoginRequiredMixin, ListView):
@@ -261,6 +266,11 @@ class ServiceCreateView(LoginRequiredMixin, CreateView):
         if request.user.role != 'master':
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['master'] = self.request.user
+        return kwargs
 
     def form_valid(self, form):
         service_object = form.save(commit=False)
@@ -348,3 +358,150 @@ def service_toggle_activity(request, pk):
     service_object.is_active = not service_object.is_active
     service_object.save()
     return redirect(reverse('services:services_list'))
+
+
+class ServiceLibraryListView(LoginRequiredMixin, ListView):
+    """Библиотека услуг - только услуги из категорий мастера"""
+    model = Service
+    template_name = 'services/service_library.html'
+    context_object_name = 'services'
+    paginate_by = 12
+    extra_context = {
+        'title': 'Библиотека услуг',
+        'description': 'Выберите услугу, которую хотите добавить в свой профиль'
+    }
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.role != 'master':
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        master_categories = self.request.user.categories.all()
+        return Service.objects.filter(
+            is_template=True,
+            category__in=master_categories
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['master_categories'] = self.request.user.categories.all()
+        return context
+
+
+class ServiceTemplateCreateView(LoginRequiredMixin, CreateView):
+    """Мастер добавляет новую услугу в библиотеку"""
+    model = Service
+    form_class = ServiceTemplateForm
+    template_name = 'services/service_template_form.html'
+    success_url = reverse_lazy('services:service_library')
+    extra_context = {'title': 'Добавить новую услугу'}
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.role != 'master':
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['master'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.is_template = True
+        form.instance.created_by = self.request.user
+        return super().form_valid(form)
+
+
+class MasterServiceCreateView(LoginRequiredMixin, CreateView):
+    model = MasterService
+    form_class = MasterServiceForm
+    template_name = 'services/master_service_create.html'
+    extra_context = {'title': 'Добавить услугу'}
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.role != 'master':
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['master'] = self.request.user
+        kwargs['selected_service_id'] = self.kwargs.get('pk')
+        return kwargs
+
+    def form_valid(self, form):
+        # Проверяем, существует ли уже такая услуга у мастера
+        existing = MasterService.objects.filter(
+            master=self.request.user,
+            service_template_id=self.kwargs.get('pk')
+        ).first()
+
+        if existing:
+            # Если существует, обновляем цену
+            existing.price = form.cleaned_data.get('price')
+            existing.is_active = True
+            existing.save()
+            messages.success(self.request, 'Услуга успешно обновлена')
+            return redirect(self.get_success_url())
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('users:master_detail', kwargs={'pk': self.request.user.pk})
+
+
+class MyServicesListView(LoginRequiredMixin, ListView):
+    """Список услуг мастера (добавленные им)"""
+    model = MasterService
+    template_name = 'services/my_services.html'
+    context_object_name = 'my_services'
+    paginate_by = 10
+    extra_context = {'title': 'Мои услуги'}
+
+    def get_queryset(self):
+        return MasterService.objects.filter(master=self.request.user, is_active=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_services'] = self.get_queryset().count()
+        return context
+
+
+class MasterServicesListView(ListView):
+    """Услуги конкретного мастера"""
+    model = MasterService
+    template_name = 'services/services_list.html'
+    context_object_name = 'services'
+    paginate_by = 9
+
+    def get_queryset(self):
+        return MasterService.objects.filter(master_id=self.kwargs['pk'], is_active=True).select_related('service_template', 'service_template__category')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        master = get_object_or_404(User, pk=self.kwargs['pk'])
+        context['master'] = master
+        context['title'] = f'Услуги мастера: {master.get_full_name()}'
+        return context
+
+
+class MasterServiceDeleteView(LoginRequiredMixin, DeleteView):
+    model = MasterService
+    template_name = 'services/master_service_confirm_delete.html'
+    success_url = reverse_lazy('services:my_services')
+
+    def dispatch(self, request, *args, **kwargs):
+        service = self.get_object()
+        if service.master != request.user and request.user.role != 'admin':
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+
+class MasterServiceToggleView(LoginRequiredMixin, View):
+    """Включить/выключить услугу мастера"""
+    def post(self, request, pk):
+        service = get_object_or_404(MasterService, pk=pk, master=request.user)
+        service.is_active = not service.is_active
+        service.save()
+        return redirect('users:master_detail', pk=request.user.pk)

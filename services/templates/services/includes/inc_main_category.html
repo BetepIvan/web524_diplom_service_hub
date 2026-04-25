@@ -1,10 +1,8 @@
 {% load services_tags %}
 
 <div class="col-md-4 mb-4">
-    <a href="{% url 'services:category_services' object.pk %}" class="text-decoration-none">
+    <a href="{% url 'services:categories_list' %}?category={{ object.id }}" class="text-decoration-none">
         <div class="card h-100 shadow-sm category-card overflow-hidden border-0 position-relative text-white" style="border-radius: 15px;">
-
-            <!-- Блок с изображением -->
             <div class="card-img-top-wrapper" style="height: 200px;">
                 {% if object.image %}
                     <img src="{{ object.image.url }}" class="w-100 h-100" style="object-fit: cover;" alt="{{ object.name }}">
@@ -13,20 +11,13 @@
                         <i class="{{ object.icon|default:'fas fa-wrench' }} fa-5x"></i>
                     </div>
                 {% endif %}
-
-                <!-- Затемнение -->
-                <div class="position-absolute top-0 start-0 w-100 h-100"
-                     style="background: rgba(0,0,0,0.3); transition: background 0.3s ease;">
-                </div>
+                <div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0,0,0,0.3); transition: background 0.3s ease;"></div>
             </div>
-
-            <!-- Название поверх картинки (по центру) -->
             <div class="card-img-overlay d-flex align-items-center justify-content-center text-center">
                 <h5 class="card-title fw-bold mb-0 text-uppercase" style="letter-spacing: 1px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
                     {{ object.name }}
                 </h5>
             </div>
-
         </div>
     </a>
 </div>
@@ -39,7 +30,7 @@
         transform: scale(1.02);
     }
     .category-card:hover .position-absolute {
-        background: rgba(0,0,0,0.5) !important; /* При наведении становится чуть темнее */
+        background: rgba(0,0,0,0.5) !important;
     }
     .category-card img {
         transition: transform 0.5s ease;
