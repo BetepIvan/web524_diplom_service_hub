@@ -9,6 +9,7 @@ def user_media(val):
         return fr'/media/{val}'
     return '/static/noavatar.png'
 
+
 @register.filter
 def average_rating(reviews):
     if not reviews:

@@ -8,6 +8,7 @@ from django.contrib.auth.views import LoginView, PasswordChangeView, LogoutView
 from django.views.generic import CreateView, UpdateView, DetailView, ListView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from django.db.models import Q, Avg
 
 from users.models import User
 from users.forms import (
@@ -15,7 +16,7 @@ from users.forms import (
     UserForm, BecomeMasterForm, MasterProfileForm
 )
 from users.services import send_register_email, send_new_password
-from services.models import Service, MasterService
+from services.models import MasterService, Category
 from reviews.models import Review
 
 
@@ -113,23 +114,50 @@ class UserListView(ListView):
         user = self.request.user
         queryset = User.objects.filter(is_active=True)
 
-        # Поиск
+        # Поиск по имени или email
         search = self.request.GET.get('search')
         if search:
             queryset = queryset.filter(
-                Q(first_name__icontains=search) |
-                Q(last_name__icontains=search) |
-                Q(email__icontains=search)
+                first_name__icontains=search,
+                last_name__icontains=search,
+                email__icontains=search
             )
 
-        # Фильтр по роли из GET-параметра
-        role_filter = self.request.GET.get('role')
+        # Фильтр по городу
+        city = self.request.GET.get('city')
+        if city:
+            queryset = queryset.filter(location__icontains=city)
 
-        # Для админа и модератора - показываем всех или фильтруем по роли
+        # Фильтр по опыту
+        exp_min = self.request.GET.get('exp_min')
+        exp_max = self.request.GET.get('exp_max')
+        if exp_min:
+            queryset = queryset.filter(experience__gte=exp_min)
+        if exp_max:
+            queryset = queryset.filter(experience__lte=exp_max)
+
+        # Фильтр по категориям (чекбоксы)
+        categories = self.request.GET.getlist('categories')
+        if categories:
+            queryset = queryset.filter(
+                categories__id__in=categories
+            ).distinct()
+
+        # Фильтр по рейтингу (через аннотацию)
+        rating_min = self.request.GET.get('rating')
+        if rating_min:
+            # Аннотируем средний рейтинг
+            queryset = queryset.annotate(
+                avg_rating=Avg('master_reviews__rating')
+            ).filter(
+                Q(avg_rating__gte=rating_min) | Q(avg_rating__isnull=True)
+            )
+
+        # Фильтр по роли (только для админа/модератора)
+        role_filter = self.request.GET.get('role')
         if user.is_authenticated and user.role in ['admin', 'moderator']:
             if role_filter:
                 queryset = queryset.filter(role=role_filter)
-            # else: показываем всех пользователей
         else:
             # Для всех остальных - только мастеров
             queryset = queryset.filter(role='master')
@@ -137,20 +165,22 @@ class UserListView(ListView):
         # Фильтр по услуге
         service_id = self.request.GET.get('service')
         if service_id:
-            from services.models import MasterService
             masters_ids = MasterService.objects.filter(
                 service_template_id=service_id,
                 is_active=True
             ).values_list('master_id', flat=True)
             queryset = queryset.filter(id__in=masters_ids)
 
-        return queryset
+        return queryset.distinct()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         service_id = self.request.GET.get('service')
-        role_filter = self.request.GET.get('role')
+
+        # Передаём список категорий для фильтра
+        context['categories'] = Category.objects.filter(is_active=True, is_moderated=True)
+        context['selected_categories'] = self.request.GET.getlist('categories')
 
         if service_id:
             from services.models import Service
@@ -161,10 +191,7 @@ class UserListView(ListView):
             context['current_service_id'] = service_id
         elif user.is_authenticated and user.role in ['admin', 'moderator']:
             context['title'] = 'Управление пользователями'
-            if role_filter:
-                context['description'] = f'Список пользователей с ролью: {role_filter}'
-            else:
-                context['description'] = 'Полный список пользователей системы'
+            context['description'] = 'Полный список пользователей системы'
         else:
             context['title'] = 'Мастера'
             context['description'] = 'Выберите мастера для вашей задачи'

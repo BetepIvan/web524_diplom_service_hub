@@ -4,12 +4,11 @@ from django.views.generic import ListView, CreateView, UpdateView, DetailView, D
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 
-
 from reviews.models import Review
 from reviews.forms import ReviewForm
 from reviews.utils import generate_slug
 from users.models import UserRoles
-from services.models import MasterService
+
 
 class ReviewListView(ListView):
     model = Review

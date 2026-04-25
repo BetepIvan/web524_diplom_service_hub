@@ -17,6 +17,7 @@ def get_category_cache():
 
         return category_list
 
+
 def send_views_mail(service_object, owner_email, views_count):
     send_mail(
         subject=f'{views_count} просмотров {service_object}',

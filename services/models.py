@@ -94,6 +94,7 @@ class ServiceImage(models.Model):
         verbose_name = 'фото услуги'
         verbose_name_plural = 'фото услуг'
 
+
 class Portfolio(models.Model):
     """Портфолио мастера - примеры выполненных работ"""
     master = models.ForeignKey(

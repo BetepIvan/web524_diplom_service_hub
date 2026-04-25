@@ -5,7 +5,6 @@ from django.contrib.auth import password_validation
 
 from users.models import User
 from users.validators import validate_password
-from services.models import Category
 
 
 class StyleFormMixin:
@@ -77,6 +76,7 @@ class BecomeMasterForm(StyleFormMixin, forms.ModelForm):
             'service_description': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Опишите ваши услуги, что вы предлагаете, особенности работы...'}),
             'location': forms.TextInput(attrs={'placeholder': 'Например: Москва, ул. Ленина 1'}),
         }
+
 
 class MasterProfileForm(StyleFormMixin, forms.ModelForm):
     work_days = forms.CharField(

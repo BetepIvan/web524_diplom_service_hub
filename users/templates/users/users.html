@@ -2,7 +2,7 @@
 {% load user_tags %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container mt-4" xmlns:category.id>
     {% if current_service_id %}
     <div class="mb-3">
         <a href="{% url 'services:categories_list' %}" class="btn btn-sm btn-outline-secondary">
@@ -18,7 +18,6 @@
                 {% include 'users/includes/inc_user_card.html' with object=object %}
             {% endfor %}
 
-            <!-- Пагинация -->
             {% if is_paginated %}
                 {% include 'services/includes/inc_pagination.html' %}
             {% endif %}
@@ -36,11 +35,62 @@
                         <input type="hidden" name="service" value="{{ current_service_id }}">
                         {% endif %}
 
+                        <!-- Поиск -->
                         <div class="mb-3">
                             <label class="form-label fw-bold">Поиск</label>
                             <input type="text" name="search" class="form-control" placeholder="Имя или email..." value="{{ request.GET.search }}">
                         </div>
 
+                        <!-- Город -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Город</label>
+                            <input type="text" name="city" class="form-control" placeholder="Город" value="{{ request.GET.city }}">
+                        </div>
+
+                        <!-- Опыт работы -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Опыт работы (лет)</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="number" name="exp_min" class="form-control form-control-sm" placeholder="от" value="{{ request.GET.exp_min }}" min="0">
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" name="exp_max" class="form-control form-control-sm" placeholder="до" value="{{ request.GET.exp_max }}" min="0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Рейтинг -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Рейтинг</label>
+                            <select name="rating" class="form-select">
+                                <option value="">Любой</option>
+                                <option value="5" {% if request.GET.rating == '5' %}selected{% endif %}>5 ★ и выше</option>
+                                <option value="4" {% if request.GET.rating == '4' %}selected{% endif %}>4 ★ и выше</option>
+                                <option value="3" {% if request.GET.rating == '3' %}selected{% endif %}>3 ★ и выше</option>
+                                <option value="2" {% if request.GET.rating == '2' %}selected{% endif %}>2 ★ и выше</option>
+                            </select>
+                        </div>
+
+                        <!-- Категории услуг (чекбоксы) -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Категории услуг</label>
+                            <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
+                                {% for category in categories %}
+                                <div class="form-check">
+                                    <input type="checkbox" name="categories" value="{{ category.id }}"
+                                           class="form-check-input" id="cat_{{ category.id }}"
+                                           {% if category.id|stringformat:"s" in selected_categories %}checked{% endif %}>
+                                    <label class="form-check-label" for="cat_{{ category.id }}">
+                                        {{ category.name }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Роль (только для админа/модератора) -->
+                        {% if user.role == 'admin' or user.role == 'moderator' %}
                         <div class="mb-3">
                             <label class="form-label fw-bold">Роль</label>
                             <select name="role" class="form-select">
@@ -48,8 +98,10 @@
                                 <option value="master" {% if request.GET.role == 'master' %}selected{% endif %}>Мастер</option>
                                 <option value="user" {% if request.GET.role == 'user' %}selected{% endif %}>Клиент</option>
                                 <option value="moderator" {% if request.GET.role == 'moderator' %}selected{% endif %}>Модератор</option>
+                                <option value="admin" {% if request.GET.role == 'admin' %}selected{% endif %}>Администратор</option>
                             </select>
                         </div>
+                        {% endif %}
 
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">Применить</button>

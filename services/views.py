@@ -207,15 +207,15 @@ class AllSearchView(ListView):
 
         # Поиск категорий по названию
         categories = Category.objects.filter(
-            Q(name__icontains=query) &
-            Q(is_active=True) &
-            Q(is_moderated=True)
+            name__icontains=query,
+            is_active=True,
+            is_moderated=True
         )
 
         # Поиск услуг (шаблонов) по названию
         services = Service.objects.filter(
-            Q(title__icontains=query) &
-            Q(is_template=True)
+            title__icontains=query,
+            is_template=True
         )
 
         # Получаем мастеров через найденные услуги
