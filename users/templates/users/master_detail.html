@@ -261,14 +261,18 @@
                         </div>
                     </div>
                     <hr>
+                    {% with avg_rating=reviews|average_rating %}
                     <div class="text-warning">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                        <span class="text-dark ms-2">4.8 ({{ reviews.count }})</span>
+                        {% for i in "12345"|make_list %}
+                            {% if forloop.counter <= avg_rating %}
+                                ★
+                            {% else %}
+                                ☆
+                            {% endif %}
+                        {% endfor %}
+                        <span class="text-dark ms-2">{{ avg_rating }} ({{ reviews.count }})</span>
                     </div>
+                    {% endwith %}
                 </div>
             </div>
 
